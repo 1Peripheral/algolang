@@ -6,4 +6,4 @@ Trying to build a tiny scripting language that resembles pseudo-code that will b
 to Lua .
 
 ### Sources
-https://www.geeksforgeeks.org/integrating-lua-in-cpp/
+https://www.youtube.com/watch?v=4l5HdmPoynw&t=956s
