@@ -57,7 +57,6 @@ void Parser::statement() {
       this->match(END);
    }
    else if (this->checkToken(VAR)) {
-      std::cout << "STATEMENT-VAR" << std::endl;
       this->nextToken();
       this->match(IDENT);
       this->match(EQ);
