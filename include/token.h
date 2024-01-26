@@ -14,8 +14,8 @@ enum TokenKind {
    
    // KEYWORDS;
    VAR = 100,
-   PRINT = 101,
-   INPUT = 102,
+   WRITE = 101,
+   READ = 102,
    IF = 103,
    THEN = 104,
    /* ENDIF = 105, */
@@ -67,8 +67,8 @@ const std::map<TokenKind, std::string> kindStringRepr = {
    {STRING, "string"},
    
    {VAR, "var"},
-   {PRINT, "print"},
-   {INPUT, "input"},
+   {WRITE, "write"},
+   {READ, "read"},
    {IF, "if"},
    {THEN, "then"},
    {END, "end"},

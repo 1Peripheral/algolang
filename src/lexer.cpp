@@ -19,7 +19,7 @@ void Lexer::nextChar() {
 }
 
 char Lexer::peek() {
-   if (this->curIndex + 1>= (int)this->source.length())
+   if (this->curIndex + 1 >= (int)this->source.length())
       return '\0';
 
    return this->source.at(this->curIndex + 1);
@@ -34,6 +34,9 @@ Token Lexer::nextToken() {
    switch (this->curChar) {
       case '\n' :
          token.set(NEWLINE, this->curChar);
+         break;
+      case '\0' :
+         token.set(ENDOF, this->curChar);
          break;
       case '+' :
          token.set(PLUS, this->curChar);
@@ -82,9 +85,21 @@ Token Lexer::nextToken() {
             token.set(LT, "<");
          break;
       }
+      case '"' : {
+         this->nextChar();
+         int startIndex = this->curIndex;
+         while (this->curChar != '"') {
+            if (this->curChar == '\n')
+               _logger.panic("Closing `\"` not found ");
+            this->nextChar();
+         }
+
+         std::string str = this->source.substr(startIndex, this->curIndex - startIndex);
+         token.set(STRING, str);
+         break;
+      }
       case '0'...'9' : {
          int startIndex = this->curIndex;
-         // 12.
          while (isdigit(this->peek())) this->nextChar();
          if (this->peek() == '.') {
             this->nextChar();
@@ -97,9 +112,9 @@ Token Lexer::nextToken() {
       }
       case 'A'...'z' : {
          int startIndex = this->curIndex;
-         while (isalnum(this->curChar) || this->curChar == '_') this->nextChar();
+         while (isalnum(this->peek()) || this->peek()== '_') this->nextChar();
 
-         std::string str = this->source.substr(startIndex, this->curIndex - startIndex);
+         std::string str = this->source.substr(startIndex, this->curIndex - startIndex + 1);
          TokenKind kind_ = Token::checkIfKeyword(str);
 
          token.set(kind_, str);
@@ -110,14 +125,13 @@ Token Lexer::nextToken() {
       }
    }
 
-
    this->nextChar();
    return token;
 }
 
 void Lexer::skipWhiteSpace() {
-   while (this->curChar == ' ' || this->curChar == '\n' ||
-         this->curChar == '\r' || this->curChar == '\t') 
+   while (this->curChar == ' ' || this->curChar == '\t' ||
+         this->curChar == '\r' ) 
       this->nextChar();
 }
 

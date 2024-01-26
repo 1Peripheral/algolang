@@ -5,9 +5,9 @@
 class Parser {
 public:
    Parser(Lexer lexer);
+   void program();
 
 private:
-   void program();
    void statement();
    void comparison();
    void expression();
@@ -20,6 +20,8 @@ private:
    void match(TokenKind kind);
    bool checkToken(TokenKind kind);
    bool checkPeek(TokenKind kind);
+
+   bool isComparisonOperator();
 
 public:
    Lexer lexer;
