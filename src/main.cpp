@@ -2,6 +2,7 @@
 #include <sstream>
 #include "../include/lexer.h"
 #include "../include/parser.h"
+#include "../include/interpreter.h"
 
 int main(int argc, char** argv) {
    Logger logger;
@@ -20,7 +21,9 @@ int main(int argc, char** argv) {
    Lexer lex = Lexer(source);
    Parser parser = Parser(lex);
 
-   parser.program();
+   Interpreter interpreter(parser.program());
+
+   interpreter.traverse();
 
    /* while (lex.peek() != '\0') { */
    /*    std::cout << lex.nextToken().toString() << std::endl; */

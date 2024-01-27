@@ -1,19 +1,25 @@
 #pragma once
 
 #include "lexer.h"
+#include "ast.h"
 
 class Parser {
 public:
    Parser(Lexer lexer);
-   void program();
+   /* void program(); */
+   AST program();
 
 private:
    void statement();
    void comparison();
-   void expression();
-   void term();
-   void unary();
-   void primary();
+   /* void expression(); */
+   Expr expression();
+   /* void term(); */
+   BinaryExpr term();
+   /* void unary(); */
+   UnaryExpr unary();
+   /* void primary(); */
+   PrimaryExpr primary();
    void newLine();
 
    void nextToken();
@@ -27,6 +33,7 @@ public:
    Lexer lexer;
    Token curToken;
    Token peekToken;
+   AST ast;
 
 private:
    Logger _logger;

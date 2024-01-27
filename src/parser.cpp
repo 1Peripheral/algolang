@@ -5,7 +5,7 @@ Parser::Parser(Lexer lexer) : lexer(lexer) {
    this->nextToken();
 }
 
-void Parser::program() {
+AST Parser::program() {
    std::cout << "PROGRAM" << std::endl;
 
    while (this->checkToken(NEWLINE))
@@ -13,6 +13,8 @@ void Parser::program() {
 
    while (!this->checkToken(ENDOF))
       this->statement();
+
+   return this->ast;
 }
 
 void Parser::statement() {
@@ -57,10 +59,16 @@ void Parser::statement() {
       this->match(END);
    }
    else if (this->checkToken(VAR)) {
+      VarStmnt stmnt; 
+      std::cout << "STATEMENT-VAR" << std::endl;
       this->nextToken();
+
+      Token ident = this->curToken;
       this->match(IDENT);
       this->match(EQ);
-      this->expression();
+
+      stmnt.value = this->expression();
+      ast.addStmnt(stmnt);
    }
    else {
       _logger.panic("Syntax error at : " + this->curToken.lexeme);
@@ -87,41 +95,63 @@ void Parser::comparison() {
    }
 }
 
-void Parser::expression() {
+Expr Parser::expression() {
    std::cout << "EXPRESSION" << std::endl;
-   this->term();
+   BinaryExpr expr;
+   expr.left = this->term();
    while (this->checkToken(PLUS) || this->checkToken(MINUS)) {
+      expr.oper = this->curToken;
       this->nextToken();
-      this->term();
+      expr.right = this->term();
    }
+
+   return expr; 
 }
 
-void Parser::term() {
+BinaryExpr Parser::term() {
    std::cout << "TERM" << std::endl;
-   this->unary();
+   BinaryExpr expr;
+   expr.left = this->unary();
    while (this->checkToken(ASTERISK) || this->checkToken(SLASH)) {
+      expr.oper = this->curToken;
       this->nextToken();
-      this->unary();
+      expr.right = this->unary();
    }
+
+   return expr;
 }
 
-void Parser::unary() {
+UnaryExpr Parser::unary() {
    std::cout << "UNARY" << std::endl;
-   if (this->checkToken(PLUS) || this->checkToken(MINUS)) this->nextToken();
-   this->primary();
+   UnaryExpr expr;
+   if (this->checkToken(PLUS) || this->checkToken(MINUS)) {
+      expr.oper = this->curToken;
+      this->nextToken();
+   }
+   else 
+      expr.oper = Token(NONE, "");
+
+   expr.right = this->primary();
+   return expr;
 }
 
-void Parser::primary() {
+PrimaryExpr Parser::primary() {
    std::cout << "PRIMARY (" << this->curToken.lexeme << ")" << std::endl;
+   PrimaryExpr expr;
+
    if (this->checkToken(IDENT)) {
+      expr.value = this->curToken;
       this->nextToken();
    }
    else if (this->checkToken(NUMBER)) {
+      expr.value = this->curToken;
       this->nextToken();
    }
    else {
       _logger.panic("Expected operator operator at " + this->curToken.lexeme);
    }
+   
+   return expr;
 }
 
 void Parser::newLine() {

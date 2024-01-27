@@ -4,10 +4,11 @@
 #include <string>
 
 enum TokenKind {
-   ENDOF = -1,
-   NEWLINE = 0,
+   ENDOF = -2,
+   NEWLINE = -1,
 
    // Types
+   NONE = 0,
    IDENT = 1,
    NUMBER = 2,
    STRING = 3,
