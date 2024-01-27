@@ -8,7 +8,7 @@ public:
    
    void run();
    void traverse();
-   void evaluate(Stmnt stmnt);
+   void evaluate(Stmnt *stmnt);
    
 private:
    AST program;

@@ -13,11 +13,11 @@ private:
    void statement();
    void comparison();
    /* void expression(); */
-   Expr expression();
+   Expr* expression();
    /* void term(); */
-   BinaryExpr term();
+   BinaryExpr* term();
    /* void unary(); */
-   UnaryExpr unary();
+   UnaryExpr* unary();
    /* void primary(); */
    PrimaryExpr primary();
    void newLine();

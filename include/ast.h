@@ -1,11 +1,12 @@
 #pragma once
 
 #include <iostream>
+
 #include <vector>
 #include "token.h"
 
 enum NodeType {
-   STMNT,
+   STMNT = 0,
    IFSTMNT,
    VARSTMNT,
    EXPR,
@@ -25,7 +26,8 @@ public:
 
 class Expr {
 public:
-   void print();
+   virtual ~Expr();
+   virtual void print();
 
    NodeType type;
 };
@@ -33,16 +35,17 @@ public:
 class AST {
 public:
    AST();
-   void addStmnt(Stmnt& stmnt);
+   void addStmnt(Stmnt* stmnt);
 
-   std::vector<Stmnt> stmnts;
+   std::vector<Stmnt*> stmnts;
 };
 
-class PrimaryExpr : Expr {
+class PrimaryExpr : public Expr {
 public:
    PrimaryExpr();
+   ~PrimaryExpr();
    PrimaryExpr(Token value);
-   void print();
+   void print() override;
 
    Token value;
 };
@@ -50,19 +53,21 @@ public:
 class BinaryExpr : public Expr {
 public:
    BinaryExpr();
-   BinaryExpr(Expr left, Expr right, Token oper);
-   void print();
+   ~BinaryExpr();
+   BinaryExpr(Expr* left, Expr* right, Token oper);
+   void print() override;
 
-   Expr left;
-   Expr right;
+   Expr* left;
+   Expr* right;
    Token oper;
 };
 
 class UnaryExpr : public Expr {
 public:
    UnaryExpr();
+   ~UnaryExpr();
    UnaryExpr(PrimaryExpr right, Token oper);
-   void print();
+   void print() override;
 
    Token oper;
    PrimaryExpr right;
@@ -87,11 +92,11 @@ public:
 class VarStmnt : public Stmnt {
 public:
    VarStmnt();
-   VarStmnt(Token ident, Expr value);
+   VarStmnt(Token ident, Expr* value);
    void print() override;
 
    Token ident;
-   Expr value;
+   Expr* value;
 };
 
 class IfStmnt : public Stmnt {

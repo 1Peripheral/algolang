@@ -7,12 +7,11 @@ Interpreter::Interpreter(AST program) {
 void Interpreter::run() {}
 
 void Interpreter::traverse() {
-   for (Stmnt stmnt : program.stmnts) {
+   for (Stmnt* stmnt : program.stmnts) {
       this->evaluate(stmnt);
    }
 }
 
-void Interpreter::evaluate(Stmnt stmnt) {
-   std::cout << program.stmnts[0].type << std::endl;
-   stmnt.print();
+void Interpreter::evaluate(Stmnt* stmnt) {
+   stmnt->print();
 }

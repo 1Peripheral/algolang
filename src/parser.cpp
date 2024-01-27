@@ -59,7 +59,7 @@ void Parser::statement() {
       this->match(END);
    }
    else if (this->checkToken(VAR)) {
-      VarStmnt stmnt; 
+      VarStmnt* stmnt = new VarStmnt(); 
       std::cout << "STATEMENT-VAR" << std::endl;
       this->nextToken();
 
@@ -67,13 +67,13 @@ void Parser::statement() {
       this->match(IDENT);
       this->match(EQ);
 
-      stmnt.value = this->expression();
+      stmnt->ident = ident;
+      stmnt->value = this->expression();
       ast.addStmnt(stmnt);
    }
    else {
       _logger.panic("Syntax error at : " + this->curToken.lexeme);
    }
-   
    this->newLine();
 }
 
@@ -95,43 +95,43 @@ void Parser::comparison() {
    }
 }
 
-Expr Parser::expression() {
+Expr* Parser::expression() {
    std::cout << "EXPRESSION" << std::endl;
-   BinaryExpr expr;
-   expr.left = this->term();
+   BinaryExpr* expr = new BinaryExpr();
+   expr->left = this->term();
    while (this->checkToken(PLUS) || this->checkToken(MINUS)) {
-      expr.oper = this->curToken;
+      expr->oper = this->curToken;
       this->nextToken();
-      expr.right = this->term();
+      expr->right = this->term();
    }
 
    return expr; 
 }
 
-BinaryExpr Parser::term() {
+BinaryExpr* Parser::term() {
    std::cout << "TERM" << std::endl;
-   BinaryExpr expr;
-   expr.left = this->unary();
+   BinaryExpr* expr = new BinaryExpr();
+   expr->left = this->unary();
    while (this->checkToken(ASTERISK) || this->checkToken(SLASH)) {
-      expr.oper = this->curToken;
+      expr->oper = this->curToken;
       this->nextToken();
-      expr.right = this->unary();
+      expr->right = this->unary();
    }
 
    return expr;
 }
 
-UnaryExpr Parser::unary() {
+UnaryExpr* Parser::unary() {
    std::cout << "UNARY" << std::endl;
-   UnaryExpr expr;
+   UnaryExpr* expr = new UnaryExpr();
    if (this->checkToken(PLUS) || this->checkToken(MINUS)) {
-      expr.oper = this->curToken;
+      expr->oper = this->curToken;
       this->nextToken();
    }
    else 
-      expr.oper = Token(NONE, "");
+      expr->oper = Token(NONE, "");
 
-   expr.right = this->primary();
+   expr->right = this->primary();
    return expr;
 }
 
