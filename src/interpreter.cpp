@@ -59,7 +59,9 @@ RuntimeVal Interpreter::evaluateBinary(Expr* expr) {
          result = left;
          break;
       }
-      default: {}
+      default: {
+         result = left;
+      }
    }
    return result;
 }
