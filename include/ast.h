@@ -10,6 +10,7 @@ enum NodeType {
    IFSTMNT,
    VARSTMNT,
    EXPR,
+   NONEEXPR,
    WRITEEXPR,
    READEXPR,
    BINARYEXPR,
@@ -30,6 +31,11 @@ public:
    virtual void print();
 
    NodeType type;
+};
+
+class NoneExpr : public Expr {
+   ~NoneExpr();
+   void print();
 };
 
 class AST {

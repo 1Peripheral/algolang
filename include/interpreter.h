@@ -1,6 +1,10 @@
 #pragma once
 
+#include <unordered_map>
 #include "ast.h"
+#include "logger.h"
+
+typedef double RuntimeVal;
 
 class Interpreter {
 public:
@@ -8,8 +12,14 @@ public:
    
    void run();
    void traverse();
-   void evaluate(Stmnt *stmnt);
+   RuntimeVal evaluate(Expr *expr);
+   RuntimeVal evaluateBinary(Expr* expr);
+   RuntimeVal evaluateUnary(Expr* expr);
+   RuntimeVal evaluatePrimary(PrimaryExpr* expr);
+   void dumpVars();
    
 private:
    AST program;
+   std::unordered_map<std::string, RuntimeVal> variables;
+   Logger _logger;
 };

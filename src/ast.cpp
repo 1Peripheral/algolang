@@ -12,6 +12,10 @@ Expr::~Expr() {}
 
 void Expr::print() {}
 
+NoneExpr::~NoneExpr() {}
+
+void NoneExpr::print() {}
+
 VarStmnt::VarStmnt() {
    this->type = VARSTMNT;
 }

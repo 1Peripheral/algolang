@@ -23,7 +23,8 @@ int main(int argc, char** argv) {
 
    Interpreter interpreter(parser.program());
 
-   interpreter.traverse();
+   interpreter.run();
+   interpreter.dumpVars();
 
    /* while (lex.peek() != '\0') { */
    /*    std::cout << lex.nextToken().toString() << std::endl; */
