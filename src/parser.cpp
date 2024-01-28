@@ -31,7 +31,9 @@ void Parser::statement() {
    }
    else if (this->checkToken(READ)) {
       this->nextToken();
+      Token var = this->curToken;
       this->match(IDENT);
+      ast.addStmnt(new ReadStmnt(var));
    }
    else if (this->checkToken(IF)) {
       this->nextToken();

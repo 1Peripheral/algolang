@@ -28,9 +28,18 @@ WriteStmnt::~WriteStmnt() {}
 
 void WriteStmnt::print() {}
 
-NoneExpr::~NoneExpr() {}
+ReadStmnt::ReadStmnt() {
+   this->type = READSTMNT;
+}
 
-void NoneExpr::print() {}
+ReadStmnt::~ReadStmnt() {}
+
+ReadStmnt::ReadStmnt(Token variable) {
+   this->type = READSTMNT;
+   this->variable = variable;
+}
+
+void ReadStmnt::print() {}
 
 VarStmnt::VarStmnt() {
    this->type = VARSTMNT;
@@ -99,3 +108,7 @@ void BinaryExpr::print() {
    if (this->right)
       this->right->print();
 }
+
+NoneExpr::~NoneExpr() {}
+
+void NoneExpr::print() {}

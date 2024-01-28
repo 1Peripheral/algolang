@@ -9,20 +9,25 @@ void Interpreter::run() {
       switch (stmnt->type) {
          case VARSTMNT: {
             VarStmnt* varStmnt = (VarStmnt*) stmnt;
-            this->variables.insert({
-               varStmnt->ident.lexeme, 
-               this->evaluate(varStmnt->value)
-            });
+            this->variables[varStmnt->ident.lexeme] = this->evaluate(varStmnt->value);
             break;
          } 
          case WRITESTMNT : {
+            // TODO : String concatenation (eg : write "Hello" + "world" + x)
             WriteStmnt* writeStmnt= (WriteStmnt*) stmnt;
             if (writeStmnt->expr != nullptr) {
                std::cout << this->evaluate(writeStmnt->expr) << std::endl;
             }
             else {
-               std::cout << writeStmnt->stringLiteral << std::endl;
+               std::cout << writeStmnt->stringLiteral << std::endl; 
             }
+            break;
+         }
+         case READSTMNT : {
+            ReadStmnt* readStmnt= (ReadStmnt*) stmnt;
+            RuntimeVal tmp;
+            std::cin >> tmp;
+            this->variables[readStmnt->variable.lexeme] = tmp;
             break;
          }
          default: {}
@@ -116,6 +121,8 @@ RuntimeVal Interpreter::evaluatePrimary(PrimaryExpr* expr) {
          break;
       }
       case TokenKind::IDENT : {
+         if (this->variables.find(pexpr->value.lexeme) == this->variables.end())
+            _logger.panic("Use of ndeclared variable : " + pexpr->value.lexeme);
          return this->variables.find(pexpr->value.lexeme)->second;
          break;
       }

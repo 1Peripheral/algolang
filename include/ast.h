@@ -94,10 +94,12 @@ public:
 
 class ReadStmnt: public Stmnt {
 public:
-   ReadStmnt(Token operand);
+   ReadStmnt();
+   ~ReadStmnt();
+   ReadStmnt(Token variable);
    void print() override;
 
-   Token operand;
+   Token variable;
 };
 
 class VarStmnt : public Stmnt {
