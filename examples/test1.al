@@ -1,1 +1,2 @@
-var x = -4 * 3 
+var x = 0
+write x

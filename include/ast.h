@@ -9,7 +9,7 @@ enum NodeType {
    STMNT = 0,
    IFSTMNT,
    READSTMNT,
-   WRITESMNT,
+   WRITESTMNT,
    VARSTMNT,
    EXPR,
    NONEEXPR,
@@ -80,13 +80,17 @@ public:
    PrimaryExpr right;
 };
 
-class WriteStmnt : public Stmnt {
+class WriteStmnt : public Stmnt{
 public:
-   WriteStmnt(Token operand);
-   void print() override;
+   WriteStmnt();
+   ~WriteStmnt();
+   WriteStmnt(Expr* expr);
+   void print();
 
-   Token operand;
+   Expr* expr;
+   std::string stringLiteral;
 };
+
 
 class ReadStmnt: public Stmnt {
 public:

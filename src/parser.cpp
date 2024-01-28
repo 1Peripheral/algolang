@@ -17,13 +17,17 @@ AST Parser::program() {
 
 void Parser::statement() {
    if (this->checkToken(WRITE)) {
+      WriteStmnt* stmnt = new WriteStmnt();
       this->nextToken();
       if (this->checkToken(STRING)) {
+         stmnt->stringLiteral = std::string(this->curToken.lexeme);
          this->nextToken();
       }
       else {
-         this->expression();
+         stmnt->stringLiteral = "";
+         stmnt->expr = this->expression();
       }
+      ast.addStmnt(stmnt);
    }
    else if (this->checkToken(READ)) {
       this->nextToken();

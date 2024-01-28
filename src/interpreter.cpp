@@ -15,6 +15,16 @@ void Interpreter::run() {
             });
             break;
          } 
+         case WRITESTMNT : {
+            WriteStmnt* writeStmnt= (WriteStmnt*) stmnt;
+            if (writeStmnt->expr != nullptr) {
+               std::cout << this->evaluate(writeStmnt->expr) << std::endl;
+            }
+            else {
+               std::cout << writeStmnt->stringLiteral << std::endl;
+            }
+            break;
+         }
          default: {}
       }
    }

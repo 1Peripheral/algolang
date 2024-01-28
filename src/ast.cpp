@@ -12,6 +12,22 @@ Expr::~Expr() {}
 
 void Expr::print() {}
 
+WriteStmnt::WriteStmnt() {
+   this->type = WRITESTMNT;
+   this->expr = nullptr;
+   this->stringLiteral = std::string();
+}
+
+WriteStmnt::WriteStmnt(Expr* expr) {
+   this->type = WRITESTMNT;
+   this->stringLiteral = std::string();
+   this->expr = expr;
+}
+
+WriteStmnt::~WriteStmnt() {}
+
+void WriteStmnt::print() {}
+
 NoneExpr::~NoneExpr() {}
 
 void NoneExpr::print() {}
@@ -62,6 +78,8 @@ void UnaryExpr::print() {
 
 BinaryExpr::BinaryExpr() {
    this->type = BINARYEXPR;
+   this->left = nullptr;
+   this->right = nullptr;
 }
 
 BinaryExpr::~BinaryExpr() {}
