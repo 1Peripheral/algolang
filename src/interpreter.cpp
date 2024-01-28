@@ -27,14 +27,6 @@ RuntimeVal Interpreter::evaluate(Expr* expr) {
          result = this->evaluateBinary(expr);
          break;
       }
-      case UNARYEXPR : {
-         result = this->evaluateUnary(expr);
-         break;
-      }
-      case PRIMARYEXPR : {
-         result = this->evaluatePrimary((PrimaryExpr*)expr);
-         break;
-      }
       default : {}
    }
    
@@ -45,18 +37,45 @@ RuntimeVal Interpreter::evaluateBinary(Expr* expr) {
    BinaryExpr* bexpr = (BinaryExpr*)expr;
    RuntimeVal result;
 
-   RuntimeVal left = this->evaluate(bexpr->left);
-   /* RuntimeVal right; */
-   /* if (bexpr->right) */
-   /*    right = this->evaluate(bexpr->right); */
+   RuntimeVal left = this->evaluateTerm(bexpr->left);
+   RuntimeVal right;
+   if (bexpr->right)
+      right = this->evaluateBinary(bexpr->right);
 
    switch (bexpr->oper.kind) {
       case TokenKind::PLUS : {
-         result = left;
+         result = left + right;
          break;
       }
       case TokenKind::MINUS : {
+         result = left - right;
+         break;
+      }
+      default: {
          result = left;
+      }
+   }
+   return result;
+}
+
+RuntimeVal Interpreter::evaluateTerm(Expr* expr) {
+   BinaryExpr* bexpr = (BinaryExpr*)expr;
+   RuntimeVal result;
+
+   RuntimeVal left = this->evaluateUnary(bexpr->left);
+   RuntimeVal right;
+   if (bexpr->right)
+      right = this->evaluateTerm(bexpr->right);
+
+   switch (bexpr->oper.kind) {
+      case TokenKind::ASTERISK : {
+         result = left * right;
+         break;
+      }
+      case TokenKind::SLASH : {
+         if (right == 0)
+            _logger.panic("Dividing by 0 is not allowed");
+         result = left / right;
          break;
       }
       default: {
@@ -84,7 +103,6 @@ RuntimeVal Interpreter::evaluatePrimary(PrimaryExpr* expr) {
    switch (pexpr->value.kind) {
       case TokenKind::NUMBER : {
          result = std::stod(pexpr->value.lexeme);
-         std::cout << result << std::endl;
          break;
       }
       case TokenKind::IDENT : {

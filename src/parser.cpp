@@ -6,8 +6,6 @@ Parser::Parser(Lexer lexer) : lexer(lexer) {
 }
 
 AST Parser::program() {
-   std::cout << "PROGRAM" << std::endl;
-
    while (this->checkToken(NEWLINE))
       this->nextToken();
 
@@ -19,7 +17,6 @@ AST Parser::program() {
 
 void Parser::statement() {
    if (this->checkToken(WRITE)) {
-      std::cout << "STATEMENT-WRITE" << std::endl;
       this->nextToken();
       if (this->checkToken(STRING)) {
          this->nextToken();
@@ -29,12 +26,10 @@ void Parser::statement() {
       }
    }
    else if (this->checkToken(READ)) {
-      std::cout << "STATEMENT-READ" << std::endl;
       this->nextToken();
       this->match(IDENT);
    }
    else if (this->checkToken(IF)) {
-      std::cout << "STATEMENT-IF" << std::endl;
       this->nextToken();
       this->comparison();
    
@@ -46,7 +41,6 @@ void Parser::statement() {
       this->match(END);
    }
    else if (this->checkToken(WHILE)) {
-      std::cout << "STATEMENT-WHILE" << std::endl;
       this->nextToken();
       this->comparison();
    
@@ -60,7 +54,6 @@ void Parser::statement() {
    }
    else if (this->checkToken(VAR)) {
       VarStmnt* stmnt = new VarStmnt(); 
-      std::cout << "STATEMENT-VAR" << std::endl;
       this->nextToken();
 
       Token ident = this->curToken;
@@ -78,7 +71,6 @@ void Parser::statement() {
 }
 
 void Parser::comparison() {
-   std::cout << "COMPARISON" << std::endl;
    this->expression();
    
    if (this->isComparisonOperator()) {
@@ -96,33 +88,30 @@ void Parser::comparison() {
 }
 
 Expr* Parser::expression() {
-   std::cout << "EXPRESSION" << std::endl;
    BinaryExpr* expr = new BinaryExpr();
    expr->left = this->term();
    while (this->checkToken(PLUS) || this->checkToken(MINUS)) {
       expr->oper = this->curToken;
       this->nextToken();
-      expr->right = this->term();
+      expr->right = this->expression();
    }
 
    return expr; 
 }
 
 BinaryExpr* Parser::term() {
-   std::cout << "TERM" << std::endl;
    BinaryExpr* expr = new BinaryExpr();
    expr->left = this->unary();
    while (this->checkToken(ASTERISK) || this->checkToken(SLASH)) {
       expr->oper = this->curToken;
       this->nextToken();
-      expr->right = this->unary();
+      expr->right = this->term();
    }
 
    return expr;
 }
 
 UnaryExpr* Parser::unary() {
-   std::cout << "UNARY" << std::endl;
    UnaryExpr* expr = new UnaryExpr();
    if (this->checkToken(PLUS) || this->checkToken(MINUS)) {
       expr->oper = this->curToken;
@@ -136,7 +125,6 @@ UnaryExpr* Parser::unary() {
 }
 
 PrimaryExpr Parser::primary() {
-   std::cout << "PRIMARY (" << this->curToken.lexeme << ")" << std::endl;
    PrimaryExpr expr;
 
    if (this->checkToken(IDENT)) {
@@ -155,8 +143,6 @@ PrimaryExpr Parser::primary() {
 }
 
 void Parser::newLine() {
-   std::cout << "NEWLINE" << std::endl;
-
    this->match(NEWLINE);
    while (this->checkToken(NEWLINE)) this->nextToken();
 }

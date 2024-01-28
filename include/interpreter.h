@@ -14,6 +14,7 @@ public:
    void traverse();
    RuntimeVal evaluate(Expr *expr);
    RuntimeVal evaluateBinary(Expr* expr);
+   RuntimeVal evaluateTerm(Expr* expr);
    RuntimeVal evaluateUnary(Expr* expr);
    RuntimeVal evaluatePrimary(PrimaryExpr* expr);
    void dumpVars();

@@ -1,2 +1,1 @@
-var x = 1
-var foo = 123
+var x = -4 * 3 
