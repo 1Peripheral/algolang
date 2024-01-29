@@ -131,21 +131,27 @@ UnaryExpr* Parser::unary() {
 }
 
 PrimaryExpr Parser::primary() {
-   PrimaryExpr expr;
+   PrimaryExpr pexpr;
 
    if (this->checkToken(IDENT)) {
-      expr.value = this->curToken;
+      pexpr.value = this->curToken;
       this->nextToken();
    }
    else if (this->checkToken(NUMBER)) {
-      expr.value = this->curToken;
+      pexpr.value = this->curToken;
       this->nextToken();
+   }
+   else if (this->checkToken(LEFTPAR)) {
+      this->nextToken();
+      pexpr.value = Token(NONE, "");
+      pexpr.expr = this->expression();
+      this->match(RIGHTPAR);
    }
    else {
       _logger.panic("Expected operator operator at " + this->curToken.lexeme);
    }
    
-   return expr;
+   return pexpr;
 }
 
 void Parser::newLine() {

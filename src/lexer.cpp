@@ -50,6 +50,14 @@ Token Lexer::nextToken() {
       case '*' :
          token.set(ASTERISK, this->curChar);
          break;
+      case '(' : {
+         token.set(LEFTPAR, this->curChar);
+         break;
+      }
+      case ')' : {
+         token.set(RIGHTPAR, this->curChar);
+         break;
+      }
       case '=' : {
          if (this->peek() == '=') {
             this->nextChar();

@@ -55,6 +55,8 @@ public:
    void print() override;
 
    Token value;
+   // OR
+   Expr* expr;
 };
 
 class BinaryExpr : public Expr {

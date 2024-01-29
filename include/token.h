@@ -26,19 +26,21 @@ enum TokenKind {
    REPEAT = 107,
 
    // Operators
-   EQ = 200,
-   EQEQ = 201,
-   NOTEQ = 202,
-   GT = 203,
-   GTEQ = 204,
-   LT = 205,
-   LTEQ = 206,
-   PLUS = 207,
-   MINUS = 208,
-   SLASH = 209,
-   ASTERISK =210,
-   LEFTPAR = 211,
-   RIGHTPAR = 212, 
+   AND = 200,
+   OR = 201,
+   EQ = 202,
+   EQEQ = 203,
+   NOTEQ = 204,
+   GT = 205,
+   GTEQ = 206,
+   LT = 207,
+   LTEQ = 208,
+   PLUS = 209,
+   MINUS = 210,
+   SLASH = 211,
+   ASTERISK =212,
+   LEFTPAR = 213,
+   RIGHTPAR = 214, 
 };
 
 class Token {
@@ -76,6 +78,8 @@ const std::map<TokenKind, std::string> kindStringRepr = {
    {WHILE, "while"},
    {REPEAT, "repeat"},
 
+   {AND, "and"},
+   {OR, "or"},
    {EQ, "eq"},
    {EQEQ, "eqeq"},
    {NOTEQ, "noteq"},

@@ -59,6 +59,7 @@ VarStmnt::VarStmnt(Token ident, Expr* value) {
 
 PrimaryExpr::PrimaryExpr() {
    this->type = PRIMARYEXPR;
+   this->expr = nullptr;
 }
 
 PrimaryExpr::~PrimaryExpr() {}

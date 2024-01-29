@@ -114,6 +114,9 @@ RuntimeVal Interpreter::evaluateUnary(Expr* expr) {
 RuntimeVal Interpreter::evaluatePrimary(PrimaryExpr* expr) {
    PrimaryExpr* pexpr = (PrimaryExpr*) expr;
    RuntimeVal result = 0;
+   
+   if (pexpr->expr != nullptr)
+      return this->evaluate(pexpr->expr);
 
    switch (pexpr->value.kind) {
       case TokenKind::NUMBER : {
@@ -126,6 +129,7 @@ RuntimeVal Interpreter::evaluatePrimary(PrimaryExpr* expr) {
          return this->variables.find(pexpr->value.lexeme)->second;
          break;
       }
+      
       default : {
          _logger.panic("Runtime error");
       }
