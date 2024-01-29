@@ -116,8 +116,11 @@ public:
 
 class IfStmnt : public Stmnt {
 public:
-   IfStmnt(Expr comparison);
+   IfStmnt();
+   ~IfStmnt();
+   IfStmnt(Expr* expr);
    void print() override;
 
-   Expr comparison;
+   Expr* expr;
+   std::vector<Stmnt*> stmnts;
 };

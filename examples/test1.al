@@ -1,2 +1,3 @@
-var x = 1
-write x
+read x
+read y
+write x * y

@@ -10,41 +10,46 @@ AST Parser::program() {
       this->nextToken();
 
    while (!this->checkToken(ENDOF))
-      this->statement();
+      ast.addStmnt(this->statement());
+      /* this->statement(); */
 
    return this->ast;
 }
 
-void Parser::statement() {
+Stmnt* Parser::statement() {
+   Stmnt* stmnt;
    if (this->checkToken(WRITE)) {
-      WriteStmnt* stmnt = new WriteStmnt();
+      WriteStmnt* writeStmnt = new WriteStmnt();
       this->nextToken();
       if (this->checkToken(STRING)) {
-         stmnt->stringLiteral = std::string(this->curToken.lexeme);
+         writeStmnt->stringLiteral = std::string(this->curToken.lexeme);
          this->nextToken();
       }
       else {
-         stmnt->stringLiteral = "";
-         stmnt->expr = this->expression();
+         writeStmnt->stringLiteral = "";
+         writeStmnt->expr = this->expression();
       }
-      ast.addStmnt(stmnt);
+      stmnt = writeStmnt;
    }
    else if (this->checkToken(READ)) {
       this->nextToken();
       Token var = this->curToken;
       this->match(IDENT);
-      ast.addStmnt(new ReadStmnt(var));
+      stmnt = new ReadStmnt(var);
    }
    else if (this->checkToken(IF)) {
+      IfStmnt* ifStmnt = new IfStmnt();
       this->nextToken();
-      this->comparison();
+      ifStmnt->expr = this->comparison();
    
       this->match(THEN);
       this->newLine();
    
-      while (!this->checkToken(END))
-         this->statement();
+      while (!this->checkToken(END)) {
+         ifStmnt->stmnts.push_back(this->statement());
+      }
       this->match(END);
+      stmnt = ifStmnt;
    }
    else if (this->checkToken(WHILE)) {
       this->nextToken();
@@ -59,38 +64,34 @@ void Parser::statement() {
       this->match(END);
    }
    else if (this->checkToken(VAR)) {
-      VarStmnt* stmnt = new VarStmnt(); 
+      VarStmnt* varStmnt = new VarStmnt(); 
       this->nextToken();
 
       Token ident = this->curToken;
       this->match(IDENT);
       this->match(EQ);
 
-      stmnt->ident = ident;
-      stmnt->value = this->expression();
-      ast.addStmnt(stmnt);
+      varStmnt->ident = ident;
+      varStmnt->value = this->expression();
+      stmnt = varStmnt;
    }
    else {
       _logger.panic("Syntax error at : " + this->curToken.lexeme);
    }
    this->newLine();
+   return stmnt;
 }
 
-void Parser::comparison() {
-   this->expression();
-   
-   if (this->isComparisonOperator()) {
+Expr* Parser::comparison() {
+   BinaryExpr* expr = new BinaryExpr();
+   expr->left = this->expression();
+   while (this->isComparisonOperator()) {
+      expr->oper = this->curToken;
       this->nextToken();
-      this->expression();
-   }
-   else {
-      _logger.panic("Expected operator operator at " + this->curToken.lexeme + " .");
+      expr->right = this->expression();
    }
 
-   while (this->isComparisonOperator()) {
-      this->nextToken();
-      this->expression();
-   }
+   return expr;
 }
 
 Expr* Parser::expression() {

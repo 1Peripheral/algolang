@@ -5,16 +5,20 @@ Interpreter::Interpreter(AST program) {
 }
 
 void Interpreter::run() {
-   for (Stmnt* stmnt : program.stmnts) {
-      switch (stmnt->type) {
+   this->run(program.stmnts);
+}
+
+void Interpreter::run(std::vector<Stmnt*> stmnts) {
+   for (auto stmnt = program.stmnts.begin() ; stmnt != program.stmnts.end() ; stmnt++) {
+      switch ((*stmnt)->type) {
          case VARSTMNT: {
-            VarStmnt* varStmnt = (VarStmnt*) stmnt;
+            VarStmnt* varStmnt = (VarStmnt*) *stmnt;
             this->variables[varStmnt->ident.lexeme] = this->evaluate(varStmnt->value);
             break;
          } 
          case WRITESTMNT : {
             // TODO : String concatenation (eg : write "Hello" + "world" + x)
-            WriteStmnt* writeStmnt= (WriteStmnt*) stmnt;
+            WriteStmnt* writeStmnt= (WriteStmnt*) *stmnt;
             if (writeStmnt->expr != nullptr) {
                std::cout << this->evaluate(writeStmnt->expr) << std::endl;
             }
@@ -24,10 +28,18 @@ void Interpreter::run() {
             break;
          }
          case READSTMNT : {
-            ReadStmnt* readStmnt= (ReadStmnt*) stmnt;
+            ReadStmnt* readStmnt= (ReadStmnt*) *stmnt;
             RuntimeVal tmp;
             std::cin >> tmp;
             this->variables[readStmnt->variable.lexeme] = tmp;
+            break;
+         }
+         case IFSTMNT : {
+            IfStmnt* ifStmnt = (IfStmnt*) *stmnt;
+            RuntimeVal comparisonResult = this->evaluate(ifStmnt->expr);
+            if (comparisonResult) {
+               this->run(ifStmnt->stmnts);
+            }
             break;
          }
          default: {}
@@ -129,8 +141,8 @@ RuntimeVal Interpreter::evaluatePrimary(PrimaryExpr* expr) {
          return this->variables.find(pexpr->value.lexeme)->second;
          break;
       }
-      
       default : {
+         _logger.log(pexpr->value.toString());
          _logger.panic("Runtime error");
       }
    }

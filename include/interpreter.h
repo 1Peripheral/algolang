@@ -11,6 +11,7 @@ public:
    Interpreter(AST program);
    
    void run();
+   void run(std::vector<Stmnt*> stmnts);
    void traverse();
    RuntimeVal evaluate(Expr *expr);
    RuntimeVal evaluateBinary(Expr* expr);
@@ -23,4 +24,5 @@ private:
    AST program;
    std::unordered_map<std::string, RuntimeVal> variables;
    Logger _logger;
+   RuntimeVal conditionFlag;
 };

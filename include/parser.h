@@ -6,19 +6,14 @@
 class Parser {
 public:
    Parser(Lexer lexer);
-   /* void program(); */
    AST program();
 
 private:
-   void statement();
-   void comparison();
-   /* void expression(); */
+   Stmnt* statement();
+   Expr* comparison();
    Expr* expression();
-   /* void term(); */
    BinaryExpr* term();
-   /* void unary(); */
    UnaryExpr* unary();
-   /* void primary(); */
    PrimaryExpr primary();
    void newLine();
 

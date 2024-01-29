@@ -57,6 +57,20 @@ VarStmnt::VarStmnt(Token ident, Expr* value) {
    this->value = value;
 }
 
+IfStmnt::IfStmnt() {
+   this->type = IFSTMNT;
+   this->expr = nullptr;
+}
+
+IfStmnt::~IfStmnt() {}
+
+IfStmnt::IfStmnt(Expr* expr) {
+   this->type = IFSTMNT;
+   this->expr = expr;
+}
+
+void IfStmnt::print() {}
+
 PrimaryExpr::PrimaryExpr() {
    this->type = PRIMARYEXPR;
    this->expr = nullptr;
@@ -90,6 +104,7 @@ BinaryExpr::BinaryExpr() {
    this->type = BINARYEXPR;
    this->left = nullptr;
    this->right = nullptr;
+   this->oper = Token(NONE, "");
 }
 
 BinaryExpr::~BinaryExpr() {}
