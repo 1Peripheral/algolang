@@ -17,12 +17,11 @@ AST Parser::program() {
 
 Stmnt* Parser::statement() {
    Stmnt* stmnt;
-   if (this->checkToken(VAR)) {
+   if (this->checkToken(IDENT)) {
       VarStmnt* varStmnt = new VarStmnt(); 
+      Token ident = this->curToken;
       this->nextToken();
 
-      Token ident = this->curToken;
-      this->match(IDENT);
       this->match(EQ);
 
       varStmnt->ident = ident;
