@@ -12,70 +12,6 @@ Expr::~Expr() {}
 
 void Expr::print() {}
 
-WriteStmnt::WriteStmnt() {
-   this->type = WRITESTMNT;
-   this->expr = nullptr;
-   this->stringLiteral = std::string();
-}
-
-WriteStmnt::WriteStmnt(Expr* expr) {
-   this->type = WRITESTMNT;
-   this->stringLiteral = std::string();
-   this->expr = expr;
-}
-
-WriteStmnt::~WriteStmnt() {}
-
-void WriteStmnt::print() {}
-
-ReadStmnt::ReadStmnt() {
-   this->type = READSTMNT;
-}
-
-ReadStmnt::~ReadStmnt() {}
-
-ReadStmnt::ReadStmnt(Token variable) {
-   this->type = READSTMNT;
-   this->variable = variable;
-}
-
-void ReadStmnt::print() {}
-
-VarStmnt::VarStmnt() {
-   this->type = VARSTMNT;
-}
-
-void VarStmnt::print() {
-   std::cout << "[VarStmnt]" << std::endl;
-   std::cout << this->ident.toString() << std::endl;
-   this->value->print();
-}
-
-VarStmnt::VarStmnt(Token ident, Expr* value) {
-   this->type = VARSTMNT;
-   this->ident = ident;
-   this->value = value;
-}
-
-IfStmnt::IfStmnt() {
-   this->type = IFSTMNT;
-   this->expr = nullptr;
-}
-
-IfStmnt::~IfStmnt() {}
-
-IfStmnt::IfStmnt(Expr* expr) {
-   this->type = IFSTMNT;
-   this->expr = expr;
-}
-
-void IfStmnt::print() {}
-
-PrimaryExpr::PrimaryExpr() {
-   this->type = PRIMARYEXPR;
-   this->expr = nullptr;
-}
-
 PrimaryExpr::~PrimaryExpr() {}
 
 PrimaryExpr::PrimaryExpr(Token value) {
@@ -128,3 +64,76 @@ void BinaryExpr::print() {
 NoneExpr::~NoneExpr() {}
 
 void NoneExpr::print() {}
+
+WriteStmnt::WriteStmnt() {
+   this->type = WRITESTMNT;
+   this->expr = nullptr;
+   this->stringLiteral = std::string();
+}
+
+WriteStmnt::WriteStmnt(Expr* expr) {
+   this->type = WRITESTMNT;
+   this->stringLiteral = std::string();
+   this->expr = expr;
+}
+
+WriteStmnt::~WriteStmnt() {}
+
+void WriteStmnt::print() {}
+
+ReadStmnt::ReadStmnt() {
+   this->type = READSTMNT;
+}
+
+ReadStmnt::~ReadStmnt() {}
+
+ReadStmnt::ReadStmnt(Token variable) {
+   this->type = READSTMNT;
+   this->variable = variable;
+}
+
+void ReadStmnt::print() {}
+
+VarStmnt::VarStmnt() {
+   this->type = VARSTMNT;
+}
+
+void VarStmnt::print() {
+   std::cout << "[VarStmnt]" << std::endl;
+   std::cout << this->ident.toString() << std::endl;
+   this->value->print();
+}
+
+VarStmnt::VarStmnt(Token ident, Expr* value) {
+   this->type = VARSTMNT;
+   this->ident = ident;
+   this->value = value;
+}
+
+IfStmnt::IfStmnt() {
+   this->type = IFSTMNT;
+   this->expr = nullptr;
+}
+
+IfStmnt::~IfStmnt() {}
+
+void IfStmnt::print() {}
+
+PrimaryExpr::PrimaryExpr() {
+   this->type = PRIMARYEXPR;
+   this->expr = nullptr;
+}
+
+WhileStmnt::WhileStmnt() {
+   this->type = WHILESTMNT;
+   this->expr = nullptr;
+}
+WhileStmnt::~WhileStmnt() {}
+
+void WhileStmnt::print() {}
+
+ContinueStmnt::ContinueStmnt() { this->type = CONTINUESTMNT; }
+ContinueStmnt::~ContinueStmnt() {}
+
+BreakStmnt::BreakStmnt() { this->type = BREAKSTMNT; }
+BreakStmnt::~BreakStmnt() {}

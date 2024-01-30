@@ -11,7 +11,6 @@ AST Parser::program() {
 
    while (!this->checkToken(ENDOF))
       ast.addStmnt(this->statement());
-      /* this->statement(); */
 
    return this->ast;
 }
@@ -52,16 +51,18 @@ Stmnt* Parser::statement() {
       stmnt = ifStmnt;
    }
    else if (this->checkToken(WHILE)) {
+      WhileStmnt* whileStmnt = new WhileStmnt();
       this->nextToken();
-      this->comparison();
+      whileStmnt->expr = this->comparison();
    
       this->match(REPEAT);
       this->newLine();
    
-      while (!this->checkToken(END))
-         this->statement();
-   
+      while (!this->checkToken(END)) {
+         whileStmnt->stmnts.push_back(this->statement());
+      }
       this->match(END);
+      stmnt = whileStmnt;
    }
    else if (this->checkToken(VAR)) {
       VarStmnt* varStmnt = new VarStmnt(); 
@@ -88,7 +89,7 @@ Expr* Parser::comparison() {
    while (this->isComparisonOperator()) {
       expr->oper = this->curToken;
       this->nextToken();
-      expr->right = this->expression();
+      expr->right = this->comparison();
    }
 
    return expr;

@@ -11,6 +11,9 @@ enum NodeType {
    READSTMNT,
    WRITESTMNT,
    VARSTMNT,
+   WHILESTMNT,
+   CONTINUESTMNT,
+   BREAKSTMNT,
    EXPR,
    NONEEXPR,
    BINARYEXPR,
@@ -34,11 +37,6 @@ public:
    NodeType type;
 };
 
-class NoneExpr : public Expr {
-   ~NoneExpr();
-   void print();
-};
-
 class AST {
 public:
    AST();
@@ -47,6 +45,7 @@ public:
    std::vector<Stmnt*> stmnts;
 };
 
+// EXPRESSIONS
 class PrimaryExpr : public Expr {
 public:
    PrimaryExpr();
@@ -82,6 +81,12 @@ public:
    PrimaryExpr right;
 };
 
+class NoneExpr : public Expr {
+   ~NoneExpr();
+   void print();
+};
+
+// STATEMENTS
 class WriteStmnt : public Stmnt{
 public:
    WriteStmnt();
@@ -118,9 +123,28 @@ class IfStmnt : public Stmnt {
 public:
    IfStmnt();
    ~IfStmnt();
-   IfStmnt(Expr* expr);
    void print() override;
 
    Expr* expr;
    std::vector<Stmnt*> stmnts;
+};
+
+class WhileStmnt : public Stmnt {
+public:
+   WhileStmnt();
+   ~WhileStmnt();
+   void print() override;
+
+   Expr* expr;
+   std::vector<Stmnt*> stmnts;
+};
+
+class ContinueStmnt : public Stmnt {
+   ContinueStmnt();
+   ~ContinueStmnt();
+};
+
+class BreakStmnt : public Stmnt {
+   BreakStmnt(); 
+   ~BreakStmnt();
 };

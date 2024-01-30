@@ -2,6 +2,8 @@
 
 Interpreter::Interpreter(AST program) {
    this->program = program;
+   this->whileContinueFlag = false;
+   this->whileBreakFlag = false;
 }
 
 void Interpreter::run() {
@@ -9,7 +11,7 @@ void Interpreter::run() {
 }
 
 void Interpreter::run(std::vector<Stmnt*> stmnts) {
-   for (auto stmnt = program.stmnts.begin() ; stmnt != program.stmnts.end() ; stmnt++) {
+   for (auto stmnt = stmnts.begin() ; stmnt != stmnts.end() ; stmnt++) {
       switch ((*stmnt)->type) {
          case VARSTMNT: {
             VarStmnt* varStmnt = (VarStmnt*) *stmnt;
@@ -18,7 +20,7 @@ void Interpreter::run(std::vector<Stmnt*> stmnts) {
          } 
          case WRITESTMNT : {
             // TODO : String concatenation (eg : write "Hello" + "world" + x)
-            WriteStmnt* writeStmnt= (WriteStmnt*) *stmnt;
+            WriteStmnt* writeStmnt = (WriteStmnt*) *stmnt;
             if (writeStmnt->expr != nullptr) {
                std::cout << this->evaluate(writeStmnt->expr) << std::endl;
             }
@@ -28,7 +30,7 @@ void Interpreter::run(std::vector<Stmnt*> stmnts) {
             break;
          }
          case READSTMNT : {
-            ReadStmnt* readStmnt= (ReadStmnt*) *stmnt;
+            ReadStmnt* readStmnt = (ReadStmnt*) *stmnt;
             RuntimeVal tmp;
             std::cin >> tmp;
             this->variables[readStmnt->variable.lexeme] = tmp;
@@ -36,10 +38,19 @@ void Interpreter::run(std::vector<Stmnt*> stmnts) {
          }
          case IFSTMNT : {
             IfStmnt* ifStmnt = (IfStmnt*) *stmnt;
-            RuntimeVal comparisonResult = this->evaluate(ifStmnt->expr);
+            RuntimeVal comparisonResult = this->evaluateComparison(ifStmnt->expr);
             if (comparisonResult) {
                this->run(ifStmnt->stmnts);
             }
+            break;
+         }
+         case WHILESTMNT: {
+            WhileStmnt* whileStmnt = (WhileStmnt*) *stmnt;
+            RuntimeVal comparisonResult = this->evaluateComparison(whileStmnt->expr);
+            if (!comparisonResult || whileBreakFlag) break;
+            this->run(whileStmnt->stmnts);
+            stmnt--; // decrementing the iterator in order to re evaluate the while comparison.
+
             break;
          }
          default: {}
@@ -58,6 +69,44 @@ RuntimeVal Interpreter::evaluate(Expr* expr) {
    }
    
    return result;
+}
+
+RuntimeVal Interpreter::evaluateComparison(Expr* expr) {
+   BinaryExpr* bexpr = (BinaryExpr*)expr;
+   RuntimeVal result;
+
+   RuntimeVal left = this->evaluateBinary(bexpr->left);
+   RuntimeVal right;
+   if (bexpr->right)
+      right = this->evaluateComparison(bexpr->right);
+
+   switch (bexpr->oper.kind) {
+      case TokenKind::EQEQ : {
+         result = left == right;
+         break;
+      }
+      case TokenKind::GT : {
+         result = left > right;
+         break;
+      }
+      case TokenKind::GTEQ : {
+         result = left >= right;
+         break;
+      }
+      case TokenKind::LT : {
+         result = left < right;
+         break;
+      }
+      case TokenKind::LTEQ : {
+         result = left <= right;
+         break;
+      }
+      default: {
+         result = left;
+      }
+   }
+   return result;
+   
 }
 
 RuntimeVal Interpreter::evaluateBinary(Expr* expr) {
@@ -142,7 +191,6 @@ RuntimeVal Interpreter::evaluatePrimary(PrimaryExpr* expr) {
          break;
       }
       default : {
-         _logger.log(pexpr->value.toString());
          _logger.panic("Runtime error");
       }
    }

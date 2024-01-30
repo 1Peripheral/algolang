@@ -77,6 +77,7 @@ const std::map<TokenKind, std::string> kindStringRepr = {
    {END, "end"},
    {WHILE, "while"},
    {REPEAT, "repeat"},
+   {REPEAT, "repeat"},
 
    {AND, "and"},
    {OR, "or"},

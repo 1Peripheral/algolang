@@ -14,6 +14,7 @@ public:
    void run(std::vector<Stmnt*> stmnts);
    void traverse();
    RuntimeVal evaluate(Expr *expr);
+   RuntimeVal evaluateComparison(Expr* expr);
    RuntimeVal evaluateBinary(Expr* expr);
    RuntimeVal evaluateTerm(Expr* expr);
    RuntimeVal evaluateUnary(Expr* expr);
@@ -24,5 +25,7 @@ private:
    AST program;
    std::unordered_map<std::string, RuntimeVal> variables;
    Logger _logger;
-   RuntimeVal conditionFlag;
+   int conditionFlag;
+   bool whileContinueFlag;
+   bool whileBreakFlag;
 };
