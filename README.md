@@ -1,9 +1,15 @@
-## Pseudo code looking scripting language
-I made this project as a proof of concept as well as to learn more about compilers/transpilers .
+## Pseudo code looking toy language
+I made this project as a proof of concept as well as to learn more about compilers/interpreters.
 
 ### About the language
-Trying to build a tiny scripting language that resembles pseudo-code that will be then transpiled 
-to Lua .
+This language uses tree walking interpretation .
 
-### Sources
-https://www.youtube.com/watch?v=4l5HdmPoynw&t=956s
+## Syntax
+```python
+read x 
+read y
+f = 10
+if x + y > 10 then
+    write "BIG IF TRUE"
+end
+```
