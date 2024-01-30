@@ -17,7 +17,19 @@ AST Parser::program() {
 
 Stmnt* Parser::statement() {
    Stmnt* stmnt;
-   if (this->checkToken(WRITE)) {
+   if (this->checkToken(VAR)) {
+      VarStmnt* varStmnt = new VarStmnt(); 
+      this->nextToken();
+
+      Token ident = this->curToken;
+      this->match(IDENT);
+      this->match(EQ);
+
+      varStmnt->ident = ident;
+      varStmnt->value = this->expression();
+      stmnt = varStmnt;
+   }
+   else if (this->checkToken(WRITE)) {
       WriteStmnt* writeStmnt = new WriteStmnt();
       this->nextToken();
       if (this->checkToken(STRING)) {
@@ -64,17 +76,13 @@ Stmnt* Parser::statement() {
       this->match(END);
       stmnt = whileStmnt;
    }
-   else if (this->checkToken(VAR)) {
-      VarStmnt* varStmnt = new VarStmnt(); 
+   else if (this->checkToken(CONTINUE)) {
       this->nextToken();
-
-      Token ident = this->curToken;
-      this->match(IDENT);
-      this->match(EQ);
-
-      varStmnt->ident = ident;
-      varStmnt->value = this->expression();
-      stmnt = varStmnt;
+      stmnt = new ContinueStmnt();
+   }
+   else if (this->checkToken(BREAK)) {
+      this->nextToken();
+      stmnt = new BreakStmnt();
    }
    else {
       _logger.panic("Syntax error at : " + this->curToken.lexeme);

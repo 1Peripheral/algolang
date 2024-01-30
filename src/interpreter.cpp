@@ -2,8 +2,8 @@
 
 Interpreter::Interpreter(AST program) {
    this->program = program;
-   this->whileContinueFlag = false;
-   this->whileBreakFlag = false;
+   this->breakLoopFlag = false;
+   this->continueLoopFlag = false;
 }
 
 void Interpreter::run() {
@@ -47,10 +47,22 @@ void Interpreter::run(std::vector<Stmnt*> stmnts) {
          case WHILESTMNT: {
             WhileStmnt* whileStmnt = (WhileStmnt*) *stmnt;
             RuntimeVal comparisonResult = this->evaluateComparison(whileStmnt->expr);
-            if (!comparisonResult || whileBreakFlag) break;
+            if (!comparisonResult) break;
             this->run(whileStmnt->stmnts);
+            if (breakLoopFlag) {
+               breakLoopFlag = false;
+               break;
+            }
             stmnt--; // decrementing the iterator in order to re evaluate the while comparison.
 
+            break;
+         }
+         case CONTINUESTMNT : {
+            continueLoopFlag = true;
+            break;
+         }
+         case BREAKSTMNT : {
+            breakLoopFlag = true;
             break;
          }
          default: {}

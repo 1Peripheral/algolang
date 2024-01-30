@@ -19,11 +19,11 @@ enum TokenKind {
    READ = 102,
    IF = 103,
    THEN = 104,
-   /* ENDIF = 105, */
    END = 105,
    WHILE = 106,
-   /* ENDWHILE =  */
    REPEAT = 107,
+   CONTINUE = 108,
+   BREAK = 109,
 
    // Operators
    AND = 200,
@@ -77,7 +77,8 @@ const std::map<TokenKind, std::string> kindStringRepr = {
    {END, "end"},
    {WHILE, "while"},
    {REPEAT, "repeat"},
-   {REPEAT, "repeat"},
+   {CONTINUE, "continue"},
+   {BREAK, "break"},
 
    {AND, "and"},
    {OR, "or"},

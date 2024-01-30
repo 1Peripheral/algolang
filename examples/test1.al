@@ -1,6 +1,7 @@
 read x 
 while x > 5 repeat
+   break
    write "NOT YET"
-   read x
+
 end
 write "GOOD BYE"

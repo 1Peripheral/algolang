@@ -140,11 +140,13 @@ public:
 };
 
 class ContinueStmnt : public Stmnt {
+public:
    ContinueStmnt();
    ~ContinueStmnt();
 };
 
 class BreakStmnt : public Stmnt {
+public:
    BreakStmnt(); 
    ~BreakStmnt();
 };

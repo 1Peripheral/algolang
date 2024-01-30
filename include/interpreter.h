@@ -26,6 +26,6 @@ private:
    std::unordered_map<std::string, RuntimeVal> variables;
    Logger _logger;
    int conditionFlag;
-   bool whileContinueFlag;
-   bool whileBreakFlag;
+   bool breakLoopFlag;
+   bool continueLoopFlag; 
 };
