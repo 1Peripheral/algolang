@@ -3,11 +3,42 @@
 
 static std::string toString(char c);
 
+std::unordered_map<char, Alphabet> Lexer::alphabetDict;
+
+void Lexer::initDict() {
+   if (alphabetDict.find(',') != alphabetDict.end()) { return; }
+   alphabetDict['(']    = Alphabet::OPEN_BRACE;
+   alphabetDict[')']    = Alphabet::CLOSE_BRACE;
+   alphabetDict['}']    = Alphabet::OPEN_CURLY_BRACE;
+   alphabetDict['{']    = Alphabet::CLOSE_CURLY_BRACE;
+   alphabetDict[',']    = Alphabet::COMMA;
+   alphabetDict['\"']   = Alphabet::QUOTE;
+   alphabetDict['-']    = Alphabet::MINUS;
+   alphabetDict['+']    = Alphabet::PLUS;
+   alphabetDict['*']    = Alphabet::ASTERISK;
+   alphabetDict['/']    = Alphabet::SLASH;
+   alphabetDict['>']    = Alphabet::GT;
+   alphabetDict['<']    = Alphabet::LT;
+   alphabetDict['=']    = Alphabet::EQUAL;
+   alphabetDict['!']    = Alphabet::EXCLAMATION;
+   alphabetDict['\n']   = Alphabet::ENDLINE;
+   alphabetDict['\0']   = Alphabet::NULLCHAR;
+
+   for (char c = '0'; c < '9'; ++c) {
+      alphabetDict[c] = Alphabet::NUMBER;
+   }
+   for (char c = 'A'; c < 'z'; ++c) {
+      alphabetDict[c] = Alphabet::ALPHA;
+   }
+}
+
+
 Lexer::Lexer(std::string source) {
    this->source = source + "\n"; 
    this->curChar = ' ';
    this->curIndex = -1;
    this->nextChar();
+   Lexer::initDict();
 }
 
 void Lexer::nextChar() {
@@ -30,35 +61,34 @@ Token Lexer::nextToken() {
    this->skipComment();
 
    Token token;
-   
-   switch (this->curChar) {
-      case '\n' :
+   switch ( Lexer::alphabetDict[this->curChar]) {
+      case Alphabet::ENDLINE:
          token.set(NEWLINE, this->curChar);
          break;
-      case '\0' :
+      case Alphabet::NULLCHAR:
          token.set(ENDOF, this->curChar);
          break;
-      case '+' :
+      case Alphabet::PLUS :
          token.set(PLUS, this->curChar);
          break;
-      case '-' :
+      case Alphabet::MINUS :
          token.set(MINUS, this->curChar);
          break;
-      case '/' :
+      case Alphabet::SLASH:
          token.set(SLASH, this->curChar);
          break;
-      case '*' :
+      case Alphabet::ASTERISK:
          token.set(ASTERISK, this->curChar);
          break;
-      case '(' : {
+      case Alphabet::OPEN_BRACE : {
          token.set(LEFTPAR, this->curChar);
          break;
       }
-      case ')' : {
+      case Alphabet::CLOSE_BRACE : {
          token.set(RIGHTPAR, this->curChar);
          break;
       }
-      case '=' : {
+      case Alphabet::EQUAL : {
          if (this->peek() == '=') {
             this->nextChar();
             token.set(EQEQ, "==");
@@ -66,7 +96,7 @@ Token Lexer::nextToken() {
          else token.set(EQ, "=");
          break;
       }
-      case '!' : {
+      case Alphabet::EXCLAMATION : {
          if (this->peek() == '=') {
             this->nextChar();
             token.set(NOTEQ, "!=");
@@ -75,7 +105,7 @@ Token Lexer::nextToken() {
             _logger.panic("Expected != got !" + toString(this->curChar) + " .");
          break;
       }
-      case '>' : {
+      case Alphabet::GT : {
          if (this->peek() == '=') {
             this->nextChar();
             token.set(GTEQ, ">=");
@@ -84,7 +114,7 @@ Token Lexer::nextToken() {
             token.set(GT, ">");
          break;
       }
-      case '<' : {
+      case Alphabet::LT : {
          if (this->peek() == '=') {
             this->nextChar();
             token.set(LTEQ, "<=");
@@ -93,7 +123,7 @@ Token Lexer::nextToken() {
             token.set(LT, "<");
          break;
       }
-      case '"' : {
+      case Alphabet::QUOTE : {
          this->nextChar();
          int startIndex = this->curIndex;
          while (this->curChar != '"') {
@@ -106,7 +136,7 @@ Token Lexer::nextToken() {
          token.set(STRING, str);
          break;
       }
-      case '0'...'9' : {
+      case Alphabet::NUMBER : {
          int startIndex = this->curIndex;
          while (isdigit(this->peek())) this->nextChar();
          if (this->peek() == '.') {
@@ -118,7 +148,7 @@ Token Lexer::nextToken() {
          token.set(NUMBER, this->source.substr(startIndex, this->curIndex - startIndex + 1));
          break;
       }
-      case 'A'...'z' : {
+      case Alphabet::ALPHA : {
          int startIndex = this->curIndex;
          while (isalnum(this->peek()) || this->peek()== '_') this->nextChar();
 
