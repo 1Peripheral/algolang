@@ -91,7 +91,7 @@ RuntimeVal Interpreter::evaluateComparison(Expr* expr) {
    RuntimeVal result;
 
    RuntimeVal left = this->evaluateBinary(bexpr->left);
-   RuntimeVal right;
+   RuntimeVal right = {};
    if (bexpr->right)
       right = this->evaluateComparison(bexpr->right);
 
@@ -129,7 +129,7 @@ RuntimeVal Interpreter::evaluateBinary(Expr* expr) {
    RuntimeVal result;
 
    RuntimeVal left = this->evaluateTerm(bexpr->left);
-   RuntimeVal right;
+   RuntimeVal right = {};
    if (bexpr->right)
       right = this->evaluateBinary(bexpr->right);
 
@@ -154,7 +154,7 @@ RuntimeVal Interpreter::evaluateTerm(Expr* expr) {
    RuntimeVal result;
 
    RuntimeVal left = this->evaluateUnary(bexpr->left);
-   RuntimeVal right;
+   RuntimeVal right= {};
    if (bexpr->right)
       right = this->evaluateTerm(bexpr->right);
 

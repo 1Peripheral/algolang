@@ -142,11 +142,7 @@ UnaryExpr* Parser::unary() {
 PrimaryExpr Parser::primary() {
    PrimaryExpr pexpr;
 
-   if (this->checkToken(IDENT)) {
-      pexpr.value = this->curToken;
-      this->nextToken();
-   }
-   else if (this->checkToken(NUMBER)) {
+   if (this->checkToken(IDENT) || this->checkToken(NUMBER)) {
       pexpr.value = this->curToken;
       this->nextToken();
    }
