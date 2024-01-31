@@ -1,35 +1,34 @@
-#include <fstream>
-#include <sstream>
+#include "../include/interpreter.h"
 #include "../include/lexer.h"
 #include "../include/parser.h"
-#include "../include/interpreter.h"
+#include <fstream>
+#include <sstream>
 
-int main(int argc, char** argv) {
-   Logger logger;
-   std::string source;
-   if (argc < 2) {
-      logger.info("You must provide a source file .");
-      exit(1);
-   }
-   else {
-      std::ifstream sourceFile(argv[1]); 
-      std::stringstream sourceStream;
-      sourceStream << sourceFile.rdbuf();
-      source = sourceStream.str();
-   }
+int main(int argc, char **argv) {
+  Logger logger;
+  std::string source;
+  if (argc < 2) {
+    logger.info("You must provide a source file .");
+    exit(1);
+  } else {
+    std::ifstream sourceFile(argv[1]);
+    std::stringstream sourceStream;
+    sourceStream << sourceFile.rdbuf();
+    source = sourceStream.str();
+  }
 
-   Lexer lex = Lexer(source);
-   Parser parser = Parser(lex);
+  Lexer lex = Lexer(source);
+  Parser parser = Parser(lex);
 
-   Interpreter interpreter(parser.program());
+  Interpreter interpreter(parser.program());
 
-   interpreter.run();
+  interpreter.run();
 
-   /* interpreter.dumpVars(); */
+  /* interpreter.dumpVars(); */
 
-   /* while (lex.peek() != '\0') { */
-   /*    std::cout << lex.nextToken().toString() << std::endl; */
-   /* } */
+  /* while (lex.peek() != '\0') { */
+  /*    std::cout << lex.nextToken().toString() << std::endl; */
+  /* } */
 
-   return 0;
+  return 0;
 }
