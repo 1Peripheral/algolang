@@ -106,30 +106,30 @@ Token Lexer::nextToken() {
          token.set(STRING, str);
          break;
       }
-      case '0'...'9' : {
-         int startIndex = this->curIndex;
-         while (isdigit(this->peek())) this->nextChar();
-         if (this->peek() == '.') {
-            this->nextChar();
-            if (!isdigit(this->peek())) 
-               _logger.panic("Illegal character after number literal .");
+      default : {
+         if (isalpha(this->curChar)) {
+            int startIndex = this->curIndex;
+            while (isalnum(this->peek()) || this->peek()== '_') this->nextChar();
+
+            std::string str = this->source.substr(startIndex, this->curIndex - startIndex + 1);
+            TokenKind kind_ = Token::checkIfKeyword(str);
+
+            token.set(kind_, str);
+         }
+         else if (isdigit(this->curChar)) {
+            int startIndex = this->curIndex;
             while (isdigit(this->peek())) this->nextChar();
+            if (this->peek() == '.') {
+               this->nextChar();
+               if (!isdigit(this->peek())) 
+                  _logger.panic("Illegal character after number literal .");
+               while (isdigit(this->peek())) this->nextChar();
          }
          token.set(NUMBER, this->source.substr(startIndex, this->curIndex - startIndex + 1));
-         break;
-      }
-      case 'A'...'z' : {
-         int startIndex = this->curIndex;
-         while (isalnum(this->peek()) || this->peek()== '_') this->nextChar();
-
-         std::string str = this->source.substr(startIndex, this->curIndex - startIndex + 1);
-         TokenKind kind_ = Token::checkIfKeyword(str);
-
-         token.set(kind_, str);
-         break;
-      }
-      default : {
-         _logger.panic("Unknown symbol : " + toString(this->curChar));
+         }
+         else {
+            _logger.panic("Unknown symbol : " + toString(this->curChar));
+         }
       }
    }
 

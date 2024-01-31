@@ -16,7 +16,7 @@ AST Parser::program() {
 }
 
 Stmnt* Parser::statement() {
-   Stmnt* stmnt;
+   Stmnt* stmnt = nullptr;
    if (this->checkToken(IDENT)) {
       VarStmnt* varStmnt = new VarStmnt(); 
       Token ident = this->curToken;

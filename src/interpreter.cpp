@@ -71,13 +71,16 @@ void Interpreter::run(std::vector<Stmnt*> stmnts) {
 }
 
 RuntimeVal Interpreter::evaluate(Expr* expr) {
-   RuntimeVal result;
+   RuntimeVal result = 0; // Will be initialized with None when types are implemented
    switch(expr->type) {
       case BINARYEXPR : {
          result = this->evaluateBinary(expr);
          break;
       }
-      default : {}
+      default : {
+         result = 0;
+         break;
+      }
    }
    
    return result;
