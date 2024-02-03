@@ -30,12 +30,6 @@ Stmnt *Parser::statement() {
   } else if (this->checkToken(WRITE)) {
     WriteStmnt *writeStmnt = new WriteStmnt();
     this->nextToken();
-    /* if (this->checkToken(STRING)) { */
-    /*   writeStmnt->stringLiteral = std::string(this->curToken.lexeme); */
-    /*   this->nextToken(); */
-    /* } else { */
-    /*   writeStmnt->stringLiteral = ""; */
-    /* } */
     writeStmnt->expr = this->expression();
     stmnt = writeStmnt;
   } else if (this->checkToken(READ)) {

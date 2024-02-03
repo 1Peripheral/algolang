@@ -9,7 +9,7 @@ Interpreter::Interpreter(AST program) {
 void Interpreter::run() { this->run(program.stmnts); }
 
 void Interpreter::run(std::vector<Stmnt *> stmnts) {
-  for (auto stmnt = stmnts.begin(); stmnt != stmnts.end(); stmnt++) {
+  for (auto stmnt = stmnts.begin(); stmnt < stmnts.end(); stmnt++) {
     switch ((*stmnt)->type) {
     case VARSTMNT: {
       VarStmnt *varStmnt = (VarStmnt *)*stmnt;
@@ -18,18 +18,15 @@ void Interpreter::run(std::vector<Stmnt *> stmnts) {
     }
     case WRITESTMNT: {
       WriteStmnt *writeStmnt = (WriteStmnt *)*stmnt;
-      /* if (writeStmnt->expr != nullptr) { */
       this->evaluate(writeStmnt->expr).print();
-      /* } else { */
-      /*   std::cout << writeStmnt->stringLiteral << std::endl; */
-      /* } */
       break;
     }
     case READSTMNT: {
       ReadStmnt *readStmnt = (ReadStmnt *)*stmnt;
-      RuntimeVal tmp;
-      std::cin >> tmp.number;
-      this->variables[readStmnt->variable.lexeme] = tmp;
+      RuntimeVal input;
+      input.type = STRING;
+      std::cin >> input.str;
+      this->variables[readStmnt->variable.lexeme] = input;
       break;
     }
     case IFSTMNT: {
@@ -50,21 +47,22 @@ void Interpreter::run(std::vector<Stmnt *> stmnts) {
         breakLoopFlag = false;
         break;
       }
-      stmnt--; // decrementing the iterator in order to re evaluate the while
-               // comparison.
-
+      // decrementing the iterator in order to re evaluate the while comparison.
+      stmnt--;
       break;
     }
     case CONTINUESTMNT: {
+      _logger.warning("Not yet implemented (continue)");
       continueLoopFlag = true;
-      break;
+      return;
     }
     case BREAKSTMNT: {
+      _logger.warning("Not yet implemented (break)");
       breakLoopFlag = true;
-      break;
+      return;
     }
-    default: {
-    }
+    default:
+      _logger.panic("Unknown statement");
     }
   }
 }
@@ -76,10 +74,8 @@ RuntimeVal Interpreter::evaluate(Expr *expr) {
     result = this->evaluateBinary(expr);
     break;
   }
-  default: {
+  default:
     result.number = 0;
-    break;
-  }
   }
 
   return result;

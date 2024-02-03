@@ -6,8 +6,6 @@
 #include "logger.h"
 #include "runtimeval.h"
 
-/* typedef double RuntimeVal; */
-
 class Interpreter {
 public:
   Interpreter(AST program);
