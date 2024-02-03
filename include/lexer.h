@@ -1,8 +1,9 @@
 #pragma once
 
+#include <iostream>
+
 #include "logger.h"
 #include "token.h"
-#include <iostream>
 
 class Lexer {
 public:

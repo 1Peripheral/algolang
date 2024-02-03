@@ -1,9 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 #include "token.h"
-#include <vector>
 
 enum NodeType {
   STMNT = 0,

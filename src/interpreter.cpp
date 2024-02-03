@@ -17,26 +17,25 @@ void Interpreter::run(std::vector<Stmnt *> stmnts) {
       break;
     }
     case WRITESTMNT: {
-      // TODO : String concatenation (eg : write "Hello" + "world" + x)
       WriteStmnt *writeStmnt = (WriteStmnt *)*stmnt;
-      if (writeStmnt->expr != nullptr) {
-        std::cout << this->evaluate(writeStmnt->expr) << std::endl;
-      } else {
-        std::cout << writeStmnt->stringLiteral << std::endl;
-      }
+      /* if (writeStmnt->expr != nullptr) { */
+      this->evaluate(writeStmnt->expr).print();
+      /* } else { */
+      /*   std::cout << writeStmnt->stringLiteral << std::endl; */
+      /* } */
       break;
     }
     case READSTMNT: {
       ReadStmnt *readStmnt = (ReadStmnt *)*stmnt;
       RuntimeVal tmp;
-      std::cin >> tmp;
+      std::cin >> tmp.number;
       this->variables[readStmnt->variable.lexeme] = tmp;
       break;
     }
     case IFSTMNT: {
       IfStmnt *ifStmnt = (IfStmnt *)*stmnt;
       RuntimeVal comparisonResult = this->evaluateComparison(ifStmnt->expr);
-      if (comparisonResult) {
+      if (comparisonResult.number) {
         this->run(ifStmnt->stmnts);
       }
       break;
@@ -44,7 +43,7 @@ void Interpreter::run(std::vector<Stmnt *> stmnts) {
     case WHILESTMNT: {
       WhileStmnt *whileStmnt = (WhileStmnt *)*stmnt;
       RuntimeVal comparisonResult = this->evaluateComparison(whileStmnt->expr);
-      if (!comparisonResult)
+      if (!comparisonResult.number)
         break;
       this->run(whileStmnt->stmnts);
       if (breakLoopFlag) {
@@ -71,15 +70,14 @@ void Interpreter::run(std::vector<Stmnt *> stmnts) {
 }
 
 RuntimeVal Interpreter::evaluate(Expr *expr) {
-  RuntimeVal result =
-      0; // Will be initialized with None when types are implemented
+  RuntimeVal result;
   switch (expr->type) {
   case BINARYEXPR: {
     result = this->evaluateBinary(expr);
     break;
   }
   default: {
-    result = 0;
+    result.number = 0;
     break;
   }
   }
@@ -89,7 +87,7 @@ RuntimeVal Interpreter::evaluate(Expr *expr) {
 
 RuntimeVal Interpreter::evaluateComparison(Expr *expr) {
   BinaryExpr *bexpr = (BinaryExpr *)expr;
-  RuntimeVal result;
+  RuntimeVal result = {};
 
   RuntimeVal left = this->evaluateBinary(bexpr->left);
   RuntimeVal right = {};
@@ -98,23 +96,23 @@ RuntimeVal Interpreter::evaluateComparison(Expr *expr) {
 
   switch (bexpr->oper.kind) {
   case TokenKind::EQEQ: {
-    result = left == right;
+    result.number = left == right;
     break;
   }
   case TokenKind::GT: {
-    result = left > right;
+    result.number = left > right;
     break;
   }
   case TokenKind::GTEQ: {
-    result = left >= right;
+    result.number = left >= right;
     break;
   }
   case TokenKind::LT: {
-    result = left < right;
+    result.number = left < right;
     break;
   }
   case TokenKind::LTEQ: {
-    result = left <= right;
+    result.number = left <= right;
     break;
   }
   default: {
@@ -151,7 +149,7 @@ RuntimeVal Interpreter::evaluateBinary(Expr *expr) {
 
 RuntimeVal Interpreter::evaluateTerm(Expr *expr) {
   BinaryExpr *bexpr = (BinaryExpr *)expr;
-  RuntimeVal result;
+  RuntimeVal result = {};
 
   RuntimeVal left = this->evaluateUnary(bexpr->left);
   RuntimeVal right = {};
@@ -164,7 +162,7 @@ RuntimeVal Interpreter::evaluateTerm(Expr *expr) {
     break;
   }
   case TokenKind::SLASH: {
-    if (right == 0)
+    if (right.number == 0)
       _logger.panic("Dividing by 0 is not allowed");
     result = left / right;
     break;
@@ -182,32 +180,35 @@ RuntimeVal Interpreter::evaluateUnary(Expr *expr) {
   RuntimeVal right = this->evaluatePrimary(&uexpr->right);
 
   if (uexpr->oper.kind == TokenKind::MINUS)
-    right *= -1;
+    right.number *= -1;
 
   return right;
 }
 
 RuntimeVal Interpreter::evaluatePrimary(PrimaryExpr *expr) {
   PrimaryExpr *pexpr = (PrimaryExpr *)expr;
-  RuntimeVal result = 0;
+  RuntimeVal result = {};
 
   if (pexpr->expr != nullptr)
     return this->evaluate(pexpr->expr);
 
   switch (pexpr->value.kind) {
   case TokenKind::NUMBER: {
-    result = std::stod(pexpr->value.lexeme);
+    result.setAsNumber(std::stod(pexpr->value.lexeme));
+    break;
+  }
+  case TokenKind::STRING: {
+    result.setAsString(pexpr->value.lexeme);
     break;
   }
   case TokenKind::IDENT: {
     if (this->variables.find(pexpr->value.lexeme) == this->variables.end())
-      _logger.panic("Use of ndeclared variable : " + pexpr->value.lexeme);
+      _logger.panic("Use of undeclared variable : " + pexpr->value.lexeme);
     return this->variables.find(pexpr->value.lexeme)->second;
     break;
   }
-  default: {
+  default:
     _logger.panic("Runtime error");
-  }
   }
 
   return result;
@@ -216,6 +217,6 @@ RuntimeVal Interpreter::evaluatePrimary(PrimaryExpr *expr) {
 void Interpreter::dumpVars() {
   _logger.debug("VARIABLES DUMP");
   for (const auto &var : variables) {
-    std::cout << var.first << " : " << var.second << std::endl;
+    std::cout << var.first << /* " : " << (var.second).print() <<*/ '\n';
   }
 }

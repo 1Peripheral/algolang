@@ -5,7 +5,7 @@ Parser::Parser(Lexer lexer) : lexer(lexer) {
   this->nextToken();
 }
 
-AST Parser::program() {
+AST Parser::parse() {
   while (this->checkToken(NEWLINE))
     this->nextToken();
 
@@ -30,13 +30,13 @@ Stmnt *Parser::statement() {
   } else if (this->checkToken(WRITE)) {
     WriteStmnt *writeStmnt = new WriteStmnt();
     this->nextToken();
-    if (this->checkToken(STRING)) {
-      writeStmnt->stringLiteral = std::string(this->curToken.lexeme);
-      this->nextToken();
-    } else {
-      writeStmnt->stringLiteral = "";
-      writeStmnt->expr = this->expression();
-    }
+    /* if (this->checkToken(STRING)) { */
+    /*   writeStmnt->stringLiteral = std::string(this->curToken.lexeme); */
+    /*   this->nextToken(); */
+    /* } else { */
+    /*   writeStmnt->stringLiteral = ""; */
+    /* } */
+    writeStmnt->expr = this->expression();
     stmnt = writeStmnt;
   } else if (this->checkToken(READ)) {
     this->nextToken();
@@ -133,7 +133,8 @@ UnaryExpr *Parser::unary() {
 PrimaryExpr Parser::primary() {
   PrimaryExpr pexpr;
 
-  if (this->checkToken(IDENT) || this->checkToken(NUMBER)) {
+  if (this->checkToken(IDENT) || this->checkToken(NUMBER) ||
+      this->checkToken(STRING)) {
     pexpr.value = this->curToken;
     this->nextToken();
   } else if (this->checkToken(LEFTPAR)) {

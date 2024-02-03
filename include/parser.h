@@ -6,7 +6,7 @@
 class Parser {
 public:
   Parser(Lexer lexer);
-  AST program();
+  AST parse();
 
 private:
   Stmnt *statement();

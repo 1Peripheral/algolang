@@ -1,6 +1,7 @@
 #pragma once
-#include "../include/colors.h"
 #include <iostream>
+
+#include "../include/colors.h"
 
 class Logger {
 public:

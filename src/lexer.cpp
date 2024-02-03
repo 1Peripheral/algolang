@@ -1,7 +1,6 @@
 #include "../include/lexer.h"
-#include <cctype>
 
-static std::string toString(char c);
+#include <cctype>
 
 Lexer::Lexer(std::string source) {
   this->source = source + "\n";
@@ -71,7 +70,7 @@ Token Lexer::nextToken() {
       this->nextChar();
       token.set(NOTEQ, "!=");
     } else
-      _logger.panic("Expected != got !" + toString(this->curChar) + " .");
+      _logger.panic("Expected != got !" + std::to_string(this->curChar) + " .");
     break;
   }
   case '>': {
@@ -129,7 +128,7 @@ Token Lexer::nextToken() {
       token.set(NUMBER, this->source.substr(startIndex,
                                             this->curIndex - startIndex + 1));
     } else {
-      _logger.panic("Unknown symbol : " + toString(this->curChar));
+      _logger.panic("Unknown symbol : " + std::to_string(this->curChar));
     }
   }
   }
@@ -148,5 +147,3 @@ void Lexer::skipComment() {
     while (this->curChar != '\n')
       this->nextChar();
 }
-
-static std::string toString(char c) { return std::string(c, 2); }

@@ -1,10 +1,12 @@
 #pragma once
 
-#include "ast.h"
-#include "logger.h"
 #include <unordered_map>
 
-typedef double RuntimeVal;
+#include "ast.h"
+#include "logger.h"
+#include "runtimeval.h"
+
+/* typedef double RuntimeVal; */
 
 class Interpreter {
 public:
