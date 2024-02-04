@@ -24,16 +24,11 @@ enum NodeType {
 
 class Stmnt {
 public:
-  virtual void print();
-
   NodeType type;
 };
 
 class Expr {
 public:
-  virtual ~Expr();
-  virtual void print();
-
   NodeType type;
 };
 
@@ -49,9 +44,6 @@ public:
 class PrimaryExpr : public Expr {
 public:
   PrimaryExpr();
-  ~PrimaryExpr();
-  PrimaryExpr(Token value);
-  void print() override;
 
   Token value;
   // OR
@@ -61,9 +53,6 @@ public:
 class BinaryExpr : public Expr {
 public:
   BinaryExpr();
-  ~BinaryExpr();
-  BinaryExpr(Expr *left, Expr *right, Token oper);
-  void print() override;
 
   Expr *left;
   Expr *right;
@@ -73,26 +62,17 @@ public:
 class UnaryExpr : public Expr {
 public:
   UnaryExpr();
-  ~UnaryExpr();
-  UnaryExpr(PrimaryExpr right, Token oper);
-  void print() override;
 
   Token oper;
   PrimaryExpr right;
 };
 
-class NoneExpr : public Expr {
-  ~NoneExpr();
-  void print();
-};
+class NoneExpr : public Expr {};
 
 // STATEMENTS
 class WriteStmnt : public Stmnt {
 public:
   WriteStmnt();
-  ~WriteStmnt();
-  WriteStmnt(Expr *expr);
-  void print();
 
   Expr *expr;
   std::string stringLiteral;
@@ -101,9 +81,7 @@ public:
 class ReadStmnt : public Stmnt {
 public:
   ReadStmnt();
-  ~ReadStmnt();
   ReadStmnt(Token variable);
-  void print() override;
 
   Token variable;
 };
@@ -111,8 +89,6 @@ public:
 class VarStmnt : public Stmnt {
 public:
   VarStmnt();
-  VarStmnt(Token ident, Expr *value);
-  void print() override;
 
   Token ident;
   Expr *value;
@@ -121,8 +97,6 @@ public:
 class IfStmnt : public Stmnt {
 public:
   IfStmnt();
-  ~IfStmnt();
-  void print() override;
 
   Expr *expr;
   std::vector<Stmnt *> stmnts;
@@ -131,8 +105,6 @@ public:
 class WhileStmnt : public Stmnt {
 public:
   WhileStmnt();
-  ~WhileStmnt();
-  void print() override;
 
   Expr *expr;
   std::vector<Stmnt *> stmnts;
@@ -141,11 +113,9 @@ public:
 class ContinueStmnt : public Stmnt {
 public:
   ContinueStmnt();
-  ~ContinueStmnt();
 };
 
 class BreakStmnt : public Stmnt {
 public:
   BreakStmnt();
-  ~BreakStmnt();
 };
