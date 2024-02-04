@@ -3,7 +3,8 @@
 
 #include "../include/colors.h"
 
-class Logger {
+class Logger
+{
 public:
   Logger();
 

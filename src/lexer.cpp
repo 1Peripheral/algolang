@@ -2,14 +2,16 @@
 
 #include <cctype>
 
-Lexer::Lexer(std::string source) {
+Lexer::Lexer(std::string source)
+{
   this->source = source + "\n";
   this->curChar = ' ';
   this->curIndex = -1;
   this->nextChar();
 }
 
-void Lexer::nextChar() {
+void Lexer::nextChar()
+{
   this->curIndex++;
   if (this->curIndex >= (int)this->source.length())
     this->curChar = '\0';
@@ -17,20 +19,23 @@ void Lexer::nextChar() {
     this->curChar = this->source.at(this->curIndex);
 }
 
-char Lexer::peek() {
+char Lexer::peek()
+{
   if (this->curIndex + 1 >= (int)this->source.length())
     return '\0';
 
   return this->source.at(this->curIndex + 1);
 }
 
-Token Lexer::nextToken() {
+Token Lexer::nextToken()
+{
   this->skipWhiteSpace();
   this->skipComment();
 
   Token token;
 
-  switch (this->curChar) {
+  switch (this->curChar)
+  {
   case '\n':
     token.set(NEWLINE, this->curChar);
     break;
@@ -58,76 +63,88 @@ Token Lexer::nextToken() {
     break;
   }
   case '=': {
-    if (this->peek() == '=') {
+    if (this->peek() == '=')
+    {
       this->nextChar();
       token.set(EQEQ, "==");
-    } else
+    }
+    else
       token.set(EQ, "=");
     break;
   }
   case '!': {
-    if (this->peek() == '=') {
+    if (this->peek() == '=')
+    {
       this->nextChar();
       token.set(NOTEQ, "!=");
-    } else
+    }
+    else
       _logger.panic("Expected != got !" + std::to_string(this->curChar) + " .");
     break;
   }
   case '>': {
-    if (this->peek() == '=') {
+    if (this->peek() == '=')
+    {
       this->nextChar();
       token.set(GTEQ, ">=");
-    } else
+    }
+    else
       token.set(GT, ">");
     break;
   }
   case '<': {
-    if (this->peek() == '=') {
+    if (this->peek() == '=')
+    {
       this->nextChar();
       token.set(LTEQ, "<=");
-    } else
+    }
+    else
       token.set(LT, "<");
     break;
   }
   case '"': {
     this->nextChar();
     int startIndex = this->curIndex;
-    while (this->curChar != '"') {
+    while (this->curChar != '"')
+    {
       if (this->curChar == '\n')
         _logger.panic("Closing `\"` not found ");
       this->nextChar();
     }
 
-    std::string str =
-        this->source.substr(startIndex, this->curIndex - startIndex);
+    std::string str = this->source.substr(startIndex, this->curIndex - startIndex);
     token.set(STRING, str);
     break;
   }
   default: {
-    if (isalpha(this->curChar)) {
+    if (isalpha(this->curChar))
+    {
       int startIndex = this->curIndex;
       while (isalnum(this->peek()) || this->peek() == '_')
         this->nextChar();
 
-      std::string str =
-          this->source.substr(startIndex, this->curIndex - startIndex + 1);
+      std::string str = this->source.substr(startIndex, this->curIndex - startIndex + 1);
       TokenKind kind_ = Token::checkIfKeyword(str);
 
       token.set(kind_, str);
-    } else if (isdigit(this->curChar)) {
+    }
+    else if (isdigit(this->curChar))
+    {
       int startIndex = this->curIndex;
       while (isdigit(this->peek()))
         this->nextChar();
-      if (this->peek() == '.') {
+      if (this->peek() == '.')
+      {
         this->nextChar();
         if (!isdigit(this->peek()))
           _logger.panic("Illegal character after number literal .");
         while (isdigit(this->peek()))
           this->nextChar();
       }
-      token.set(NUMBER, this->source.substr(startIndex,
-                                            this->curIndex - startIndex + 1));
-    } else {
+      token.set(NUMBER, this->source.substr(startIndex, this->curIndex - startIndex + 1));
+    }
+    else
+    {
       _logger.panic("Unknown symbol : " + std::to_string(this->curChar));
     }
   }
@@ -137,12 +154,14 @@ Token Lexer::nextToken() {
   return token;
 }
 
-void Lexer::skipWhiteSpace() {
+void Lexer::skipWhiteSpace()
+{
   while (this->curChar == ' ' || this->curChar == '\t' || this->curChar == '\r')
     this->nextChar();
 }
 
-void Lexer::skipComment() {
+void Lexer::skipComment()
+{
   if (this->curChar == '#')
     while (this->curChar != '\n')
       this->nextChar();

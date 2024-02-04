@@ -6,7 +6,8 @@
 #include "logger.h"
 #include "runtimeval.h"
 
-class Interpreter {
+class Interpreter
+{
 public:
   Interpreter(AST program);
 

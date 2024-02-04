@@ -1,49 +1,76 @@
 #include "../include/ast.h"
 
-AST::AST() {}
+AST::AST()
+{
+}
 
-void AST::addStmnt(Stmnt *stmnt) { this->stmnts.push_back(stmnt); }
+void AST::addStmnt(Stmnt *stmnt)
+{
+  this->stmnts.push_back(stmnt);
+}
 
-UnaryExpr::UnaryExpr() { this->type = UNARYEXPR; }
+UnaryExpr::UnaryExpr()
+{
+  this->type = UNARYEXPR;
+}
 
-
-BinaryExpr::BinaryExpr() {
+BinaryExpr::BinaryExpr()
+{
   this->type = BINARYEXPR;
   this->left = nullptr;
   this->right = nullptr;
   this->oper = Token(NONE, "");
 }
 
-WriteStmnt::WriteStmnt() {
+WriteStmnt::WriteStmnt()
+{
   this->type = WRITESTMNT;
   this->expr = nullptr;
   this->stringLiteral = std::string();
 }
 
-ReadStmnt::ReadStmnt() { this->type = READSTMNT; }
-
-ReadStmnt::ReadStmnt(Token variable) {
+ReadStmnt::ReadStmnt()
+{
   this->type = READSTMNT;
-  this->variable = variable;
+  this->variableType = NONE;
 }
 
-VarStmnt::VarStmnt() { this->type = VARSTMNT; }
+ReadStmnt::ReadStmnt(Token variable, TokenKind variableType)
+{
+  this->type = READSTMNT;
+  this->variable = variable;
+  this->variableType = variableType;
+}
 
-IfStmnt::IfStmnt() {
+VarStmnt::VarStmnt()
+{
+  this->type = VARSTMNT;
+}
+
+IfStmnt::IfStmnt()
+{
   this->type = IFSTMNT;
   this->expr = nullptr;
 }
 
-PrimaryExpr::PrimaryExpr() {
+PrimaryExpr::PrimaryExpr()
+{
   this->type = PRIMARYEXPR;
   this->expr = nullptr;
 }
 
-WhileStmnt::WhileStmnt() {
+WhileStmnt::WhileStmnt()
+{
   this->type = WHILESTMNT;
   this->expr = nullptr;
 }
 
-ContinueStmnt::ContinueStmnt() { this->type = CONTINUESTMNT; }
+ContinueStmnt::ContinueStmnt()
+{
+  this->type = CONTINUESTMNT;
+}
 
-BreakStmnt::BreakStmnt() { this->type = BREAKSTMNT; }
+BreakStmnt::BreakStmnt()
+{
+  this->type = BREAKSTMNT;
+}

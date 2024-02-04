@@ -5,7 +5,8 @@
 #include "logger.h"
 #include "token.h"
 
-class Lexer {
+class Lexer
+{
 public:
   Lexer(std::string source);
 

@@ -5,7 +5,8 @@
 
 #include "token.h"
 
-enum NodeType {
+enum NodeType
+{
   STMNT = 0,
   IFSTMNT,
   READSTMNT,
@@ -22,17 +23,20 @@ enum NodeType {
   PRIMARYEXPR,
 };
 
-class Stmnt {
+class Stmnt
+{
 public:
   NodeType type;
 };
 
-class Expr {
+class Expr
+{
 public:
   NodeType type;
 };
 
-class AST {
+class AST
+{
 public:
   AST();
   void addStmnt(Stmnt *stmnt);
@@ -41,7 +45,8 @@ public:
 };
 
 // EXPRESSIONS
-class PrimaryExpr : public Expr {
+class PrimaryExpr : public Expr
+{
 public:
   PrimaryExpr();
 
@@ -50,7 +55,8 @@ public:
   Expr *expr;
 };
 
-class BinaryExpr : public Expr {
+class BinaryExpr : public Expr
+{
 public:
   BinaryExpr();
 
@@ -59,7 +65,8 @@ public:
   Token oper;
 };
 
-class UnaryExpr : public Expr {
+class UnaryExpr : public Expr
+{
 public:
   UnaryExpr();
 
@@ -67,10 +74,13 @@ public:
   PrimaryExpr right;
 };
 
-class NoneExpr : public Expr {};
+class NoneExpr : public Expr
+{
+};
 
 // STATEMENTS
-class WriteStmnt : public Stmnt {
+class WriteStmnt : public Stmnt
+{
 public:
   WriteStmnt();
 
@@ -78,15 +88,18 @@ public:
   std::string stringLiteral;
 };
 
-class ReadStmnt : public Stmnt {
+class ReadStmnt : public Stmnt
+{
 public:
   ReadStmnt();
-  ReadStmnt(Token variable);
+  ReadStmnt(Token variable, TokenKind variableType);
 
   Token variable;
+  TokenKind variableType;
 };
 
-class VarStmnt : public Stmnt {
+class VarStmnt : public Stmnt
+{
 public:
   VarStmnt();
 
@@ -94,7 +107,8 @@ public:
   Expr *value;
 };
 
-class IfStmnt : public Stmnt {
+class IfStmnt : public Stmnt
+{
 public:
   IfStmnt();
 
@@ -102,7 +116,8 @@ public:
   std::vector<Stmnt *> stmnts;
 };
 
-class WhileStmnt : public Stmnt {
+class WhileStmnt : public Stmnt
+{
 public:
   WhileStmnt();
 
@@ -110,12 +125,14 @@ public:
   std::vector<Stmnt *> stmnts;
 };
 
-class ContinueStmnt : public Stmnt {
+class ContinueStmnt : public Stmnt
+{
 public:
   ContinueStmnt();
 };
 
-class BreakStmnt : public Stmnt {
+class BreakStmnt : public Stmnt
+{
 public:
   BreakStmnt();
 };

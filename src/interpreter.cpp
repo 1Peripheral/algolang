@@ -1,16 +1,23 @@
 #include "../include/interpreter.h"
 
-Interpreter::Interpreter(AST program) {
+Interpreter::Interpreter(AST program)
+{
   this->program = program;
   this->breakLoopFlag = false;
   this->continueLoopFlag = false;
 }
 
-void Interpreter::run() { this->run(program.stmnts); }
+void Interpreter::run()
+{
+  this->run(program.stmnts);
+}
 
-void Interpreter::run(std::vector<Stmnt *> stmnts) {
-  for (auto stmnt = stmnts.begin(); stmnt < stmnts.end(); stmnt++) {
-    switch ((*stmnt)->type) {
+void Interpreter::run(std::vector<Stmnt *> stmnts)
+{
+  for (auto stmnt = stmnts.begin(); stmnt < stmnts.end(); stmnt++)
+  {
+    switch ((*stmnt)->type)
+    {
     case VARSTMNT: {
       VarStmnt *varStmnt = (VarStmnt *)*stmnt;
       this->variables[varStmnt->ident.lexeme] = this->evaluate(varStmnt->value);
@@ -24,15 +31,24 @@ void Interpreter::run(std::vector<Stmnt *> stmnts) {
     case READSTMNT: {
       ReadStmnt *readStmnt = (ReadStmnt *)*stmnt;
       RuntimeVal input;
-      input.type = STRING;
-      std::cin >> input.str;
+      if (readStmnt->variableType == NUMBER)
+      {
+        std::cin >> input.number;
+        input.type = NUMBER;
+      }
+      else
+      {
+        std::cin >> input.str;
+        input.type = STRING;
+      }
       this->variables[readStmnt->variable.lexeme] = input;
       break;
     }
     case IFSTMNT: {
       IfStmnt *ifStmnt = (IfStmnt *)*stmnt;
       RuntimeVal comparisonResult = this->evaluateComparison(ifStmnt->expr);
-      if (comparisonResult.number) {
+      if (comparisonResult.number)
+      {
         this->run(ifStmnt->stmnts);
       }
       break;
@@ -43,7 +59,8 @@ void Interpreter::run(std::vector<Stmnt *> stmnts) {
       if (!comparisonResult.number)
         break;
       this->run(whileStmnt->stmnts);
-      if (breakLoopFlag) {
+      if (breakLoopFlag)
+      {
         breakLoopFlag = false;
         break;
       }
@@ -67,9 +84,11 @@ void Interpreter::run(std::vector<Stmnt *> stmnts) {
   }
 }
 
-RuntimeVal Interpreter::evaluate(Expr *expr) {
+RuntimeVal Interpreter::evaluate(Expr *expr)
+{
   RuntimeVal result;
-  switch (expr->type) {
+  switch (expr->type)
+  {
   case BINARYEXPR: {
     result = this->evaluateBinary(expr);
     break;
@@ -81,7 +100,8 @@ RuntimeVal Interpreter::evaluate(Expr *expr) {
   return result;
 }
 
-RuntimeVal Interpreter::evaluateComparison(Expr *expr) {
+RuntimeVal Interpreter::evaluateComparison(Expr *expr)
+{
   BinaryExpr *bexpr = (BinaryExpr *)expr;
   RuntimeVal result = {};
 
@@ -90,7 +110,8 @@ RuntimeVal Interpreter::evaluateComparison(Expr *expr) {
   if (bexpr->right)
     right = this->evaluateComparison(bexpr->right);
 
-  switch (bexpr->oper.kind) {
+  switch (bexpr->oper.kind)
+  {
   case TokenKind::EQEQ: {
     result.number = left == right;
     break;
@@ -118,7 +139,8 @@ RuntimeVal Interpreter::evaluateComparison(Expr *expr) {
   return result;
 }
 
-RuntimeVal Interpreter::evaluateBinary(Expr *expr) {
+RuntimeVal Interpreter::evaluateBinary(Expr *expr)
+{
   BinaryExpr *bexpr = (BinaryExpr *)expr;
   RuntimeVal result;
 
@@ -127,7 +149,8 @@ RuntimeVal Interpreter::evaluateBinary(Expr *expr) {
   if (bexpr->right)
     right = this->evaluateBinary(bexpr->right);
 
-  switch (bexpr->oper.kind) {
+  switch (bexpr->oper.kind)
+  {
   case TokenKind::PLUS: {
     result = left + right;
     break;
@@ -143,7 +166,8 @@ RuntimeVal Interpreter::evaluateBinary(Expr *expr) {
   return result;
 }
 
-RuntimeVal Interpreter::evaluateTerm(Expr *expr) {
+RuntimeVal Interpreter::evaluateTerm(Expr *expr)
+{
   BinaryExpr *bexpr = (BinaryExpr *)expr;
   RuntimeVal result = {};
 
@@ -152,7 +176,8 @@ RuntimeVal Interpreter::evaluateTerm(Expr *expr) {
   if (bexpr->right)
     right = this->evaluateTerm(bexpr->right);
 
-  switch (bexpr->oper.kind) {
+  switch (bexpr->oper.kind)
+  {
   case TokenKind::ASTERISK: {
     result = left * right;
     break;
@@ -170,7 +195,8 @@ RuntimeVal Interpreter::evaluateTerm(Expr *expr) {
   return result;
 }
 
-RuntimeVal Interpreter::evaluateUnary(Expr *expr) {
+RuntimeVal Interpreter::evaluateUnary(Expr *expr)
+{
   UnaryExpr *uexpr = (UnaryExpr *)expr;
 
   RuntimeVal right = this->evaluatePrimary(&uexpr->right);
@@ -181,14 +207,16 @@ RuntimeVal Interpreter::evaluateUnary(Expr *expr) {
   return right;
 }
 
-RuntimeVal Interpreter::evaluatePrimary(PrimaryExpr *expr) {
+RuntimeVal Interpreter::evaluatePrimary(PrimaryExpr *expr)
+{
   PrimaryExpr *pexpr = (PrimaryExpr *)expr;
   RuntimeVal result = {};
 
   if (pexpr->expr != nullptr)
     return this->evaluate(pexpr->expr);
 
-  switch (pexpr->value.kind) {
+  switch (pexpr->value.kind)
+  {
   case TokenKind::NUMBER: {
     result.setAsNumber(std::stod(pexpr->value.lexeme));
     break;
@@ -210,9 +238,11 @@ RuntimeVal Interpreter::evaluatePrimary(PrimaryExpr *expr) {
   return result;
 }
 
-void Interpreter::dumpVars() {
+void Interpreter::dumpVars()
+{
   _logger.debug("VARIABLES DUMP");
-  for (const auto &var : variables) {
+  for (const auto &var : variables)
+  {
     std::cout << var.first << /* " : " << (var.second).print() <<*/ '\n';
   }
 }

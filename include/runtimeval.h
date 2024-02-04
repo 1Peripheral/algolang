@@ -4,7 +4,8 @@
 #include "token.h"
 #include "utils.h"
 
-class RuntimeVal {
+class RuntimeVal
+{
 public:
   RuntimeVal();
 

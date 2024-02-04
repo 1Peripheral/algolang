@@ -3,7 +3,8 @@
 #include "ast.h"
 #include "lexer.h"
 
-class Parser {
+class Parser
+{
 public:
   Parser(Lexer lexer);
   AST parse();
@@ -19,6 +20,7 @@ private:
 
   void nextToken();
   void match(TokenKind kind);
+  void match();
   bool checkToken(TokenKind kind);
   bool checkPeek(TokenKind kind);
 
