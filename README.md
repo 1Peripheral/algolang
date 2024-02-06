@@ -6,8 +6,8 @@ This language uses tree walking interpretation .
 
 ## Syntax
 ```python
-read x 
-read y
+read x as number
+read y as number
 f = 10
 if x + y > 10 then
     write "BIG IF TRUE"
