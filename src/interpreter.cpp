@@ -1,18 +1,29 @@
 #include "../include/interpreter.h"
 
+Interpreter::Interpreter()
+{
+  this->breakLoopFlag = false;
+  this->continueLoopFlag = false;
+}
+
 Interpreter::Interpreter(AST program)
 {
   this->program = program;
   this->breakLoopFlag = false;
   this->continueLoopFlag = false;
 }
-
-void Interpreter::run()
+void Interpreter::run(AST program)
 {
-  this->run(program.stmnts);
+  this->program = program;
+  this->traverse();
 }
 
-void Interpreter::run(std::vector<Stmnt *> stmnts)
+void Interpreter::traverse()
+{
+  this->traverse(program.stmnts);
+}
+
+void Interpreter::traverse(std::vector<Stmnt *> stmnts)
 {
   for (auto stmnt = stmnts.begin(); stmnt < stmnts.end(); stmnt++)
   {
@@ -49,7 +60,7 @@ void Interpreter::run(std::vector<Stmnt *> stmnts)
       RuntimeVal comparisonResult = this->evaluateComparison(ifStmnt->expr);
       if (comparisonResult.number)
       {
-        this->run(ifStmnt->stmnts);
+        this->traverse(ifStmnt->stmnts);
       }
       break;
     }
@@ -58,7 +69,7 @@ void Interpreter::run(std::vector<Stmnt *> stmnts)
       RuntimeVal comparisonResult = this->evaluateComparison(whileStmnt->expr);
       if (!comparisonResult.number)
         break;
-      this->run(whileStmnt->stmnts);
+      this->traverse(whileStmnt->stmnts);
       if (breakLoopFlag)
       {
         breakLoopFlag = false;
