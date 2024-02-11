@@ -9,11 +9,12 @@
 class Interpreter
 {
 public:
+  Interpreter();
   Interpreter(AST program);
 
-  void run();
-  void run(std::vector<Stmnt *> stmnts);
   void traverse();
+  void traverse(std::vector<Stmnt *> stmnts);
+  void run(AST program);
   RuntimeVal evaluate(Expr *expr);
   RuntimeVal evaluateComparison(Expr *expr);
   RuntimeVal evaluateBinary(Expr *expr);
