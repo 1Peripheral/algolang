@@ -13,6 +13,7 @@ enum TokenKind
   IDENT,
   NUMBER,
   STRING,
+  ARRAY,
 
   // KEYWORDS;
   VAR,
@@ -26,6 +27,7 @@ enum TokenKind
   REPEAT,
   CONTINUE,
   BREAK,
+  FN,
 
   // Operators
   AND,
@@ -43,6 +45,9 @@ enum TokenKind
   ASTERISK,
   LEFTPAR,
   RIGHTPAR,
+  LEFTBRAC,
+  RIGHTBRAC,
+  COMMA,
 };
 
 class Token
@@ -65,18 +70,42 @@ public:
 };
 
 const std::map<TokenKind, std::string> kindStringRepr = {
-    {ENDOF, "endof"},       {NEWLINE, "newline"},
+    {ENDOF, "endof"},
+    {NEWLINE, "newline"},
 
-    {IDENT, "ident"},       {NUMBER, "number"},   {STRING, "string"},
+    {IDENT, "ident"},
+    {NUMBER, "number"},
+    {STRING, "string"},
 
-    {VAR, "var"},           {WRITE, "write"},     {AS, "as"},
-    {READ, "read"},         {IF, "if"},           {THEN, "then"},
-    {END, "end"},           {WHILE, "while"},     {REPEAT, "repeat"},
-    {CONTINUE, "continue"}, {BREAK, "break"},
+    {VAR, "var"},
+    {WRITE, "write"},
+    {AS, "as"},
+    {READ, "read"},
+    {IF, "if"},
+    {THEN, "then"},
+    {END, "end"},
+    {WHILE, "while"},
+    {REPEAT, "repeat"},
+    {CONTINUE, "continue"},
+    {BREAK, "break"},
+    {FN, "function"},
 
-    {AND, "and"},           {OR, "or"},           {EQ, "eq"},
-    {EQEQ, "eqeq"},         {NOTEQ, "noteq"},     {GT, "gt"},
-    {GTEQ, "gteq"},         {LT, "lt"},           {LTEQ, "lteq"},
-    {PLUS, "plus"},         {MINUS, "minus"},     {SLASH, "slash"},
-    {ASTERISK, "asterisk"}, {LEFTPAR, "leftpar"}, {RIGHTPAR, "rightpar"},
+    {AND, "and"},
+    {OR, "or"},
+    {EQ, "eq"},
+    {EQEQ, "eqeq"},
+    {NOTEQ, "noteq"},
+    {GT, "gt"},
+    {GTEQ, "gteq"},
+    {LT, "lt"},
+    {LTEQ, "lteq"},
+    {PLUS, "plus"},
+    {MINUS, "minus"},
+    {SLASH, "slash"},
+    {ASTERISK, "asterisk"},
+    {LEFTPAR, "leftpar"},
+    {RIGHTPAR, "rightpar"},
+    {COMMA, ","},
+    {LEFTBRAC, "leftbrac"},
+    {RIGHTBRAC, "rightbrac"},
 };

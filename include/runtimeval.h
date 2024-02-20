@@ -3,6 +3,7 @@
 #include "logger.h"
 #include "token.h"
 #include "utils.h"
+#include <vector>
 
 class RuntimeVal
 {
@@ -26,10 +27,12 @@ public:
   TokenKind getType();
   void setAsNumber(double num);
   void setAsString(std::string str);
+  void addToArray(RuntimeVal val);
   void print() const;
 
   std::string str;
   double number;
+  std::vector<RuntimeVal> array;
   TokenKind type;
 
 private:

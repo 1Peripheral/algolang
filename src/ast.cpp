@@ -74,3 +74,8 @@ BreakStmnt::BreakStmnt()
 {
   this->type = BREAKSTMNT;
 }
+
+ArrayExpr::ArrayExpr()
+{
+  this->type = ARRAYEXPR;
+}

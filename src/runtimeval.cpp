@@ -19,6 +19,12 @@ void RuntimeVal::operator=(const RuntimeVal &other)
     this->str = other.str;
     this->type = other.type;
   }
+  else if (other.type == ARRAY)
+  {
+    this->array = other.array;
+    this->type = other.type;
+  }
+
   else
     _logger.panic("Unsupported operation");
 }
@@ -146,6 +152,15 @@ void RuntimeVal::setAsNumber(double num)
   this->number = num;
   this->type = NUMBER;
 }
+
+void RuntimeVal::addToArray(RuntimeVal val)
+{
+  if (this->type != ARRAY)
+    return;
+
+  this->array.push_back(val);
+}
+
 void RuntimeVal::setAsString(std::string str)
 {
   this->str = str;
@@ -155,7 +170,19 @@ void RuntimeVal::setAsString(std::string str)
 void RuntimeVal::print() const
 {
   if (this->type == NUMBER)
-    std::cout << this->number << "\n";
+    std::cout << this->number;
+
+  else if (this->type == ARRAY)
+  {
+    std::cout << '[';
+    for (RuntimeVal v : this->array)
+    {
+      v.print();
+      std::cout << ",";
+    }
+    std::cout << ']';
+  }
+
   else
-    std::cout << this->str << "\n";
+    std::cout << this->str;
 }

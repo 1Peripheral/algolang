@@ -23,11 +23,25 @@ Stmnt *Parser::statement()
   if (this->checkToken(IDENT))
   {
     VarStmnt *varStmnt = new VarStmnt();
-    Token ident = this->curToken;
+    varStmnt->ident = this->curToken;
     this->nextToken();
     this->match(EQ);
-    varStmnt->ident = ident;
-    varStmnt->value = this->expression();
+    if (this->checkToken(LEFTBRAC))
+    {
+      ArrayExpr *array = new ArrayExpr();
+      this->nextToken();
+      while (!this->checkPeek(NEWLINE))
+      {
+        array->elmnts.push_back(this->expression());
+        if (this->checkToken(RIGHTBRAC))
+          break;
+        this->match(COMMA);
+      }
+      this->match(RIGHTBRAC);
+      varStmnt->value = array;
+    }
+    else
+      varStmnt->value = this->expression();
     stmnt = varStmnt;
   }
   else if (this->checkToken(WRITE))

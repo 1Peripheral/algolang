@@ -21,6 +21,9 @@ enum NodeType
   TERMEXPR,
   UNARYEXPR,
   PRIMARYEXPR,
+  ARRAYEXPR,
+  FUNCDECL,
+  FUNCCALL,
 };
 
 class Stmnt
@@ -135,4 +138,12 @@ class BreakStmnt : public Stmnt
 {
 public:
   BreakStmnt();
+};
+
+class ArrayExpr : public Expr
+{
+public:
+  ArrayExpr();
+
+  std::vector<Expr *> elmnts;
 };

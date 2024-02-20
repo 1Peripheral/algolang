@@ -37,6 +37,7 @@ void Interpreter::traverse(std::vector<Stmnt *> stmnts)
     case WRITESTMNT: {
       WriteStmnt *writeStmnt = (WriteStmnt *)*stmnt;
       this->evaluate(writeStmnt->expr).print();
+      std::cout << '\n';
       break;
     }
     case READSTMNT: {
@@ -100,8 +101,16 @@ RuntimeVal Interpreter::evaluate(Expr *expr)
   RuntimeVal result;
   switch (expr->type)
   {
-  case BINARYEXPR: {
+  case BINARYEXPR:
     result = this->evaluateBinary(expr);
+    break;
+  case ARRAYEXPR: {
+    ArrayExpr *arrayExpr = (ArrayExpr *)expr;
+    for (auto value : arrayExpr->elmnts)
+    {
+      result.type = ARRAY;
+      result.addToArray(this->evaluate(value));
+    }
     break;
   }
   default:

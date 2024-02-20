@@ -13,14 +13,16 @@ int main(int argc, char **argv)
   Interpreter interpreter;
   if (argc < 2)
   {
-    std::cout << "Algolang REPL"  << '\n';
+    std::cout << "Algolang REPL" << '\n';
     std::string input = "";
-    while (true) {
+    while (true)
+    {
       std::cout << "(al) #> ";
       std::getline(std::cin, input);
-      if (input == ".exit") 
+      if (input == ".exit")
         return 0;
-      else {
+      else
+      {
         AST program = Parser(Lexer(input)).parse();
         interpreter.run(program);
       }
