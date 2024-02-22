@@ -4,6 +4,7 @@ Interpreter::Interpreter()
 {
   this->breakLoopFlag = false;
   this->continueLoopFlag = false;
+  this->frames.make(); // main frame 
 }
 
 Interpreter::Interpreter(AST program)
@@ -11,6 +12,7 @@ Interpreter::Interpreter(AST program)
   this->program = program;
   this->breakLoopFlag = false;
   this->continueLoopFlag = false;
+  this->frames.make(); // main frame 
 }
 void Interpreter::run(AST program)
 {
@@ -31,7 +33,8 @@ void Interpreter::traverse(std::vector<Stmnt *> stmnts)
     {
     case VARSTMNT: {
       VarStmnt *varStmnt = (VarStmnt *)*stmnt;
-      this->variables[varStmnt->ident.lexeme] = this->evaluate(varStmnt->value);
+      this->frames.add(varStmnt->ident.lexeme,
+                       this->evaluate(varStmnt->value));
       break;
     }
     case FUNCDECL: {
@@ -58,7 +61,7 @@ void Interpreter::traverse(std::vector<Stmnt *> stmnts)
         std::cin >> input.str;
         input.type = STRING;
       }
-      this->variables[readStmnt->variable.lexeme] = input;
+      this->frames.add(readStmnt->variable.lexeme, input);
       break;
     }
     case IFSTMNT: {
@@ -270,9 +273,9 @@ RuntimeVal Interpreter::evaluatePrimary(Expr *expr)
     break;
   }
   case TokenKind::IDENT: {
-    if (this->variables.find(pexpr->value.lexeme) == this->variables.end())
+    if (!this->frames.exists(pexpr->value.lexeme))
       _logger.panic("Use of undeclared variable : " + pexpr->value.lexeme);
-    return this->variables.find(pexpr->value.lexeme)->second;
+    return this->frames.get(pexpr->value.lexeme);
     break;
   }
   default:
@@ -284,9 +287,4 @@ RuntimeVal Interpreter::evaluatePrimary(Expr *expr)
 
 void Interpreter::dumpVars()
 {
-  _logger.debug("VARIABLES DUMP");
-  for (const auto &var : variables)
-  {
-    std::cout << var.first << /* " : " << (var.second).print() <<*/ '\n';
-  }
 }

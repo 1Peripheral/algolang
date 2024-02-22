@@ -5,6 +5,7 @@
 #include "ast.h"
 #include "logger.h"
 #include "runtimeval.h"
+#include "frame.h"
 
 class Interpreter
 {
@@ -25,7 +26,8 @@ public:
 
 private:
   AST program;
-  std::unordered_map<std::string, RuntimeVal> variables;
+  // std::unordered_map<std::string, RuntimeVal> variables;
+  StackFrame frames;
   std::unordered_map<std::string, FunctionDecl> functions;
   Logger _logger;
   int conditionFlag;
