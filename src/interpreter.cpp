@@ -34,6 +34,11 @@ void Interpreter::traverse(std::vector<Stmnt *> stmnts)
       this->variables[varStmnt->ident.lexeme] = this->evaluate(varStmnt->value);
       break;
     }
+    case FUNCDECL: {
+      FunctionDecl *funcDecl = (FunctionDecl *)*stmnt;
+      functions[funcDecl->identifier] = *funcDecl;
+      break;
+    }
     case WRITESTMNT: {
       WriteStmnt *writeStmnt = (WriteStmnt *)*stmnt;
       this->evaluate(writeStmnt->expr).print();
@@ -80,6 +85,12 @@ void Interpreter::traverse(std::vector<Stmnt *> stmnts)
       stmnt--;
       break;
     }
+    case FUNCCALL: {
+      FuncCall *funcCall = (FuncCall *)*stmnt;
+      FunctionDecl function = this->functions.find(funcCall->identifier)->second;
+      this->traverse(function.stmnts);
+      break;
+    }
     case CONTINUESTMNT: {
       _logger.warning("Not yet implemented (continue)");
       continueLoopFlag = true;
@@ -110,6 +121,19 @@ RuntimeVal Interpreter::evaluate(Expr *expr)
     {
       result.type = ARRAY;
       result.addToArray(this->evaluate(value));
+    }
+    break;
+  }
+  case FUNCCALL: {
+    FuncCall *funCall = (FuncCall *)expr;
+    auto func = this->functions.find(funCall->identifier);
+    if (func != this->functions.end())
+    {
+      this->traverse(func->second.stmnts);
+    }
+    else
+    {
+      _logger.panic("Call to an undeclared function : " + funCall->identifier + " .");
     }
     break;
   }
@@ -219,7 +243,7 @@ RuntimeVal Interpreter::evaluateUnary(Expr *expr)
 {
   UnaryExpr *uexpr = (UnaryExpr *)expr;
 
-  RuntimeVal right = this->evaluatePrimary(&uexpr->right);
+  RuntimeVal right = this->evaluatePrimary(uexpr->right);
 
   if (uexpr->oper.kind == TokenKind::MINUS)
     right.number *= -1;
@@ -227,7 +251,7 @@ RuntimeVal Interpreter::evaluateUnary(Expr *expr)
   return right;
 }
 
-RuntimeVal Interpreter::evaluatePrimary(PrimaryExpr *expr)
+RuntimeVal Interpreter::evaluatePrimary(Expr *expr)
 {
   PrimaryExpr *pexpr = (PrimaryExpr *)expr;
   RuntimeVal result = {};

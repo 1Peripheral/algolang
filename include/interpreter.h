@@ -20,12 +20,13 @@ public:
   RuntimeVal evaluateBinary(Expr *expr);
   RuntimeVal evaluateTerm(Expr *expr);
   RuntimeVal evaluateUnary(Expr *expr);
-  RuntimeVal evaluatePrimary(PrimaryExpr *expr);
+  RuntimeVal evaluatePrimary(Expr *expr);
   void dumpVars();
 
 private:
   AST program;
   std::unordered_map<std::string, RuntimeVal> variables;
+  std::unordered_map<std::string, FunctionDecl> functions;
   Logger _logger;
   int conditionFlag;
   bool breakLoopFlag;

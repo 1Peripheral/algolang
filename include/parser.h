@@ -15,7 +15,7 @@ private:
   Expr *expression();
   BinaryExpr *term();
   UnaryExpr *unary();
-  PrimaryExpr primary();
+  Expr *primary();
   void newLine();
 
   void nextToken();

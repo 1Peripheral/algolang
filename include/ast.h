@@ -74,11 +74,19 @@ public:
   UnaryExpr();
 
   Token oper;
-  PrimaryExpr right;
+  Expr *right;
 };
 
 class NoneExpr : public Expr
 {
+};
+
+class ArrayExpr : public Expr
+{
+public:
+  ArrayExpr();
+
+  std::vector<Expr *> elmnts;
 };
 
 // STATEMENTS
@@ -140,10 +148,21 @@ public:
   BreakStmnt();
 };
 
-class ArrayExpr : public Expr
+class FunctionDecl : public Stmnt
 {
 public:
-  ArrayExpr();
+  FunctionDecl();
 
-  std::vector<Expr *> elmnts;
+  std::string identifier;
+  std::vector<Expr *> args;
+  std::vector<Stmnt *> stmnts;
+};
+
+class FuncCall : public Stmnt
+{
+public:
+  FuncCall();
+
+  std::string identifier;
+  std::vector<Expr *> args;
 };

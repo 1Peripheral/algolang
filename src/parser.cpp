@@ -20,9 +20,10 @@ AST Parser::parse()
 Stmnt *Parser::statement()
 {
   Stmnt *stmnt = nullptr;
-  if (this->checkToken(IDENT))
+  if (this->checkToken(LET))
   {
     VarStmnt *varStmnt = new VarStmnt();
+    this->nextToken();
     varStmnt->ident = this->curToken;
     this->nextToken();
     this->match(EQ);
@@ -43,6 +44,20 @@ Stmnt *Parser::statement()
     else
       varStmnt->value = this->expression();
     stmnt = varStmnt;
+  }
+  else if (this->checkToken(FN))
+  {
+    FunctionDecl *funcDecl = new FunctionDecl();
+    this->nextToken();
+    funcDecl->identifier = this->curToken.lexeme;
+    this->nextToken();
+    this->match(LEFTPAR);
+    this->match(RIGHTPAR);
+    this->newLine();
+    while (!this->checkToken(END))
+      funcDecl->stmnts.push_back(this->statement());
+    this->match(END);
+    stmnt = funcDecl;
   }
   else if (this->checkToken(WRITE))
   {
@@ -100,6 +115,15 @@ Stmnt *Parser::statement()
   {
     this->nextToken();
     stmnt = new BreakStmnt();
+  }
+  else if (this->checkToken(IDENT))
+  {
+    FuncCall* funcCall = new FuncCall();
+    funcCall->identifier = this->curToken.lexeme;
+    this->nextToken();
+    this->match(LEFTPAR);
+    this->match(RIGHTPAR);
+    stmnt = funcCall;
   }
   else
   {
@@ -166,28 +190,32 @@ UnaryExpr *Parser::unary()
   return expr;
 }
 
-PrimaryExpr Parser::primary()
+Expr *Parser::primary()
 {
-  PrimaryExpr pexpr;
+  Expr *expr;
 
   if (this->checkToken(IDENT) || this->checkToken(NUMBER) || this->checkToken(STRING))
   {
-    pexpr.value = this->curToken;
+    PrimaryExpr *pexpr = new PrimaryExpr();
+    pexpr->value = this->curToken;
     this->nextToken();
+    expr = pexpr;
   }
   else if (this->checkToken(LEFTPAR))
   {
+    PrimaryExpr *pexpr = new PrimaryExpr();
     this->nextToken();
-    pexpr.value = Token(NONE, "");
-    pexpr.expr = this->expression();
+    pexpr->value = Token(NONE, "");
+    pexpr->expr = this->expression();
     this->match(RIGHTPAR);
+    expr = pexpr;
   }
   else
   {
     _logger.panic("Expected operator operator at " + this->curToken.lexeme);
   }
 
-  return pexpr;
+  return expr;
 }
 
 void Parser::newLine()

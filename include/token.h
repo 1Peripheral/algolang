@@ -16,7 +16,7 @@ enum TokenKind
   ARRAY,
 
   // KEYWORDS;
-  VAR,
+  LET,
   WRITE,
   AS,
   READ,
@@ -28,6 +28,7 @@ enum TokenKind
   CONTINUE,
   BREAK,
   FN,
+  RETURN,
 
   // Operators
   AND,
@@ -77,7 +78,7 @@ const std::map<TokenKind, std::string> kindStringRepr = {
     {NUMBER, "number"},
     {STRING, "string"},
 
-    {VAR, "var"},
+    {LET, "let"},
     {WRITE, "write"},
     {AS, "as"},
     {READ, "read"},
@@ -88,7 +89,8 @@ const std::map<TokenKind, std::string> kindStringRepr = {
     {REPEAT, "repeat"},
     {CONTINUE, "continue"},
     {BREAK, "break"},
-    {FN, "function"},
+    {FN, "fn"},
+    {RETURN, "return"},
 
     {AND, "and"},
     {OR, "or"},

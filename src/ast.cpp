@@ -59,6 +59,11 @@ PrimaryExpr::PrimaryExpr()
   this->expr = nullptr;
 }
 
+FuncCall::FuncCall()
+{
+  this->type = FUNCCALL;
+}
+
 WhileStmnt::WhileStmnt()
 {
   this->type = WHILESTMNT;
@@ -78,4 +83,9 @@ BreakStmnt::BreakStmnt()
 ArrayExpr::ArrayExpr()
 {
   this->type = ARRAYEXPR;
+}
+
+FunctionDecl::FunctionDecl()
+{
+  this->type = FUNCDECL;
 }
