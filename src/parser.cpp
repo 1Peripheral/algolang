@@ -20,30 +20,45 @@ AST Parser::parse()
 Stmnt *Parser::statement()
 {
   Stmnt *stmnt = nullptr;
-  if (this->checkToken(LET))
+  if (this->checkToken(IDENT))
   {
-    VarStmnt *varStmnt = new VarStmnt();
-    this->nextToken();
-    varStmnt->ident = this->curToken;
-    this->nextToken();
-    this->match(EQ);
-    if (this->checkToken(LEFTBRAC))
-    {
-      ArrayExpr *array = new ArrayExpr();
+    if (this->checkPeek(EQ)) {
+      VarStmnt *varStmnt = new VarStmnt();
+      varStmnt->ident = this->curToken;
       this->nextToken();
-      while (!this->checkPeek(NEWLINE))
+      this->match(EQ);
+      if (this->checkToken(LEFTBRAC))
       {
-        array->elmnts.push_back(this->expression());
-        if (this->checkToken(RIGHTBRAC))
+        ArrayExpr *array = new ArrayExpr();
+        this->nextToken();
+        while (!this->checkPeek(NEWLINE))
+        {
+          array->elmnts.push_back(this->expression());
+          if (this->checkToken(RIGHTBRAC))
+            break;
+          this->match(COMMA);
+        }
+        this->match(RIGHTBRAC);
+        varStmnt->value = array;
+      }
+      else
+        varStmnt->value = this->expression();
+      stmnt = varStmnt;
+    }
+    else if (this->checkPeek(LEFTPAR)){
+      FuncCall* funcCall = new FuncCall();
+      funcCall->identifier = this->curToken.lexeme;
+      this->nextToken();
+      this->match(LEFTPAR);
+      while (!this->checkPeek(NEWLINE)) {
+        if (this->checkToken(RIGHTPAR))
           break;
+        funcCall->args.push_back(this->expression());
         this->match(COMMA);
       }
-      this->match(RIGHTBRAC);
-      varStmnt->value = array;
+      this->match(RIGHTPAR);
+      stmnt = funcCall;
     }
-    else
-      varStmnt->value = this->expression();
-    stmnt = varStmnt;
   }
   else if (this->checkToken(FN))
   {
@@ -52,6 +67,12 @@ Stmnt *Parser::statement()
     funcDecl->identifier = this->curToken.lexeme;
     this->nextToken();
     this->match(LEFTPAR);
+    while (!this->checkPeek(NEWLINE)) {
+      if (this->checkToken(RIGHTPAR))
+        break;
+      funcDecl->args.push_back(this->expression());
+      this->match(COMMA);
+    }
     this->match(RIGHTPAR);
     this->newLine();
     while (!this->checkToken(END))
@@ -115,15 +136,6 @@ Stmnt *Parser::statement()
   {
     this->nextToken();
     stmnt = new BreakStmnt();
-  }
-  else if (this->checkToken(IDENT))
-  {
-    FuncCall* funcCall = new FuncCall();
-    funcCall->identifier = this->curToken.lexeme;
-    this->nextToken();
-    this->match(LEFTPAR);
-    this->match(RIGHTPAR);
-    stmnt = funcCall;
   }
   else
   {
@@ -192,7 +204,7 @@ UnaryExpr *Parser::unary()
 
 Expr *Parser::primary()
 {
-  Expr *expr;
+  Expr *expr = nullptr;
 
   if (this->checkToken(IDENT) || this->checkToken(NUMBER) || this->checkToken(STRING))
   {

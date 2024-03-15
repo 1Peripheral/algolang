@@ -1,5 +1,9 @@
 #!/usr/bin/algol
 
+fn hello_world()
+  write "hello world"
+end
+
 n = 1
 
 a = 0
@@ -18,3 +22,4 @@ while n <= 19 repeat
    n = n + 1
 end
 
+hello_world()
